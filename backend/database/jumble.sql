@@ -12,7 +12,8 @@ JUserID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
 Image blob,
 Name text,
 Email text,
-Slack text
+Slack text,
+FirstHack bool
 );
 
 CREATE TABLE IF NOT EXISTS MajorJUser (
@@ -38,7 +39,6 @@ FOREIGN KEY userlikes_userliked_fk(UserLikedID)
 REFERENCES JUser(JUserID),
 PRIMARY KEY (UserMainID, UserLikedID)
 );
-    
 
 CREATE TABLE IF NOT EXISTS Idea (
    IdeaID int AUTO_INCREMENT NOT NULL PRIMARY KEY,

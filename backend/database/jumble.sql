@@ -4,7 +4,7 @@ USE jumble;
 
 CREATE TABLE IF NOT EXISTS Major (
    MajorID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
-   Name text NOT NULL UNIQUE
+   Name varchar(100) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS JUser (
@@ -13,7 +13,7 @@ Image blob,
 Name text,
 Email text,
 Slack text,
-FirstHack bool
+FirstHack BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS MajorJUser (

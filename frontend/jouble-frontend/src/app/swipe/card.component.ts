@@ -17,6 +17,11 @@ const dbBadge: BadgeData = {
   badgeImg: '/assets/badges/database.png'
 };
 
+const firstTimer: BadgeData = {
+  badgeName: 'first',
+  badgeImg: '/assets/badges/firsttimer.png'
+};
+
 @Component({
   selector: 'swipe_card',
   templateUrl: './card.component.html',
@@ -30,5 +35,5 @@ export class Card {
   major = 'Computer Engineering';
 
 
-  badges = [pythonBadge, jsBadge, dbBadge];
+  badges = [firstTimer, pythonBadge, jsBadge, dbBadge];
 }

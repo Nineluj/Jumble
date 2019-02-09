@@ -2,13 +2,17 @@ DROP DATABASE IF EXISTS jumble;
 CREATE DATABASE jumble;
 USE jumble;
 
-CREATE TABLE IF NOT EXISTS JUser (
-JUserID int AUTO_INCREMENT NOT NULL PRIMARY KEY
-);
-
 CREATE TABLE IF NOT EXISTS Major (
    MajorID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
 Name text
+);
+
+CREATE TABLE IF NOT EXISTS JUser (
+JUserID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+Image blob,
+Name text,
+Email text,
+Slack text
 );
 
 CREATE TABLE IF NOT EXISTS MajorJUser (
@@ -19,16 +23,6 @@ REFERENCES Major(MajorID),
 FOREIGN KEY majorjuser_user_fk(JUserID)
 REFERENCES JUser(JUserID),
 PRIMARY KEY (MajorID, JUserID)
-);
-
-CREATE TABLE IF NOT EXISTS Attributes (
-JUserID int PRIMARY KEY,
-Image blob,
-Name text,
-Email text,
-Slack text,
-FOREIGN KEY attributes_juser_fk(JUserID)
-REFERENCES JUser(JUserID)
 );
 
 CREATE TABLE IF NOT EXISTS Interest (
@@ -130,4 +124,26 @@ JUsername text,
 Password blob,
    FOREIGN KEY auth_juser_fk(JUserID)
 REFERENCES JUser(JUserID)
+);
+
+CREATE TABLE IF NOT EXISTS Company (
+	CompanyID int PRIMARY KEY,
+    Website text,
+    Slack text,
+    Image blob,
+    Description text
+    );
+
+CREATE TABLE IF NOT EXISTS Opening (
+	OpeningID int PRIMARY KEY,
+    title text
+    );
+
+CREATE TABLE IF NOT EXISTS CompanyOpenings (
+	CompanyID int,
+    OpeningID int,
+     FOREIGN KEY companyopenings_company_fk(CompanyID)
+REFERENCES Company(CompanyID),
+ FOREIGN KEY companyopenings_opening_fk(OpeningID)
+REFERENCES Opening(OpeningID)
 );

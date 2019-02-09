@@ -242,8 +242,12 @@ class Wipe(Resource):
                 FOREIGN KEY companyopenings_opening_fk(OpeningID)
                 REFERENCES Opening(OpeningID));
                 """]
-                map(lambda x: crsr.execute(x), sql)
+                cnxn = getConnection()
+                for statement in sql:
+                    with cnxn.cursor() as crsr:
+                        crsr.execute(statement)
                 cnxn.commit()
+                cnxn.close()
                 return {'message' : 'Successfully nuked database.'}
         except:
             return {'error': 500}, 500
@@ -322,6 +326,13 @@ class Users(Resource):
 
             crsr.execute("INSERT INTO jumble.MajorJUser (MajorID, JUserID) VALUES (%s, %s);", (major_id['MajorID'], user_id['JUserID']))
             cnxn.commit()
+        cnxn.close()
+
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            if 'first_hack' in user:
+                crsr.execute("""UPDATE jumble.JUser SET FirstHack = %s""", (user['first_hack']))
+                cnxn.commit()
         cnxn.close()
 
         # This is trash and needs to be fixed

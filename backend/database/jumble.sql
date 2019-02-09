@@ -13,7 +13,7 @@ Image blob,
 Name text,
 Email text,
 Slack text,
-FirstHack bool
+FirstHack BOOLEAN
 );
 
 CREATE TABLE IF NOT EXISTS MajorJUser (

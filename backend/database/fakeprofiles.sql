@@ -1,9 +1,14 @@
 USE jumble;
 
+/*
 DELETE FROM MajorJUser WHERE MajorID > 0;
 DELETE FROM UserLikes WHERE UserMainID > 0;
 DELETE FROM JUserInterests WHERE JUserID > 0;
 DELETE FROM JUserIdeas WHERE JUserID > 0;
+DELETE FROM JUserSkill WHERE JUserID > 0;
+DELETE FROM Contact WHERE PrimaryJUserID > 0;
+DELETE FROM JUserEvent WHERE JUserID > 0;
+DELETE FROM Auth WHERE JUserID > 0;
 
 DELETE FROM JUser WHERE JUserID <> 0;
 ALTER TABLE JUser AUTO_INCREMENT = 1;
@@ -20,8 +25,11 @@ ALTER TABLE Idea AUTO_INCREMENT = 1;
 DELETE FROM Skill WHERE SkillID <> 0;
 ALTER TABLE Skill AUTO_INCREMENT = 1;
 
+DELETE FROM Event WHERE EventID <> 0;
+ALTER TABLE Event AUTO_INCREMENT = 1;
+*/
 INSERT INTO JUser (Image, Name, Email, Slack, FirstHack)
-VALUES (LOAD_FILE('/Users/alex_tapley/Desktop/teamgitboost-beanpot/pictures/BB.jpg'), 'Barry B. Benson', 'bb123@beehive.com', 'barry_bee', FALSE),
+VALUES (LOAD_FILE('../../pictures/BB.jpg'), 'Barry B. Benson', 'bb123@beehive.com', 'barry_bee', FALSE),
 (LOAD_FILE('../../pictures/ChadBradley.jpg'), 'Chad Bradley', 'totally@bro.com', 'lit_gainz', TRUE),
 (LOAD_FILE('../../pictures/ChickenLou.jpg'), 'Chicken Louis', 'dave@chickenlous.net', 'crispy-luscious_deluxe', FALSE),
 (LOAD_FILE('../../pictures/DorialBeckham.jpg'), 'Dorial Green-Beckham', 'nfllegends@retired.com', 'oops-I-did-it-again', TRUE),
@@ -149,7 +157,7 @@ VALUES ('Green Engineering'),
  (8,12),
  (8,4);
  
- INSERT INTO JUserSkills (JUserID, SKillID)
+ INSERT INTO JUserSkill (JUserID, SKillID)
  VALUES (1,1),
  (1,8),
  (2,10),
@@ -181,5 +189,25 @@ VALUES ('Green Engineering'),
  (8,6);
  
  INSERT INTO Event (AdminID, EName)
- VALUES (8, 'HackPasta'),
- (2, '
+ VALUES (8, 'HackBeanpot'),
+ (2, 'Fratathon');
+ 
+ INSERT INTO JUserEvent (EventID, JUserID)
+ VALUES (2, 4),
+ (2, 5),
+ (1,1),
+ (1,3),
+ (1,4),
+ (1,5),
+ (1,6),
+ (1,7);
+ 
+ INSERT INTO Auth (JUserID, JUsername, JPassword)
+ VALUES (1, 'barryb', 1),
+ (2, 'chadb', 2),
+ (3, 'louisc', 3),
+ (4, 'dorialgoat', 4),
+ (5, 'flatscreen', 5),
+ (6, 'oofboof', 6),
+ (7, 'loser', 7),
+ (8, 'magianos', 8);

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS Major (
 
 CREATE TABLE IF NOT EXISTS JUser (
 JUserID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
-Image blob,
+Image text,
 Name text,
 Email text,
 Slack text,
@@ -80,12 +80,13 @@ PRIMARY KEY (JUserID, SkillID)
 );
 
 CREATE TABLE IF NOT EXISTS Contact (
-   PrimaryJUserID int PRIMARY KEY,
+   PrimaryJUserID int,
    ContactID int,
    FOREIGN KEY contact_primary_fk(PrimaryJUserID)
 REFERENCES JUser(JUserID),
    FOREIGN KEY contact_contact_fk(ContactID)
-REFERENCES JUser(JUserID)
+REFERENCES JUser(JUserID),
+PRIMARY KEY (PrimaryJUserID, ContactID)
 );
 
 CREATE TABLE IF NOT EXISTS Event (
@@ -127,9 +128,9 @@ PRIMARY KEY (TeamID, JUserID)
 );
 
 CREATE TABLE IF NOT EXISTS Auth (
-   JUserID int,
+   JUserID int PRIMARY KEY,
 JUsername text,
-Password blob,
+JPassword blob,
    FOREIGN KEY auth_juser_fk(JUserID)
 REFERENCES JUser(JUserID)
 );

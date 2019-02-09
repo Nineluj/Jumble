@@ -1,5 +1,7 @@
-CREATE TABLE IF NOT EXISTS User (
-UserID int AUTO_INCREMENT NOT NULL PRIMARY KEY
+USE jumble;
+
+CREATE TABLE IF NOT EXISTS JUser (
+JUserID int AUTO_INCREMENT NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS Major (
@@ -7,23 +9,24 @@ CREATE TABLE IF NOT EXISTS Major (
    Name text
 );
 
-CREATE TABLE IF NOT EXISTS MajorUser (
-	MajorID int PRIMARY KEY,
-    UserID int PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS MajorJUser (
+	MajorID int,
+    JUserID int,
     FOREIGN KEY major_fk(MajorID)
    REFERENCES Major(MajorID),
-   FOREIGN KEY user_fk(UserID)
-   REFERENCES User(UserID)
+   FOREIGN KEY Juser_fk(JUserID)
+   REFERENCES JUser(JUserID),
+   PRIMARY KEY (MajorID, JUserID)
    );
 
 CREATE TABLE IF NOT EXISTS Attributes (
-   UserID int PRIMARY KEY,
+   JUserID int PRIMARY KEY,
    Image blob,
    Name text,
    Email text,
    Slack text,
-   FOREIGN KEY user_fk(UserID)
-   REFERENCES User(UserID)
+   FOREIGN KEY Juser_fk(JUserID)
+   REFERENCES JUser(JUserID)
 );
 
 CREATE TABLE IF NOT EXISTS Interest (
@@ -36,33 +39,33 @@ CREATE TABLE IF NOT EXISTS Skill (
    Name text
 );
 
-CREATE TABLE IF NOT EXISTS UserInterests (
-    UserID int,
+CREATE TABLE IF NOT EXISTS JUserInterests (
+    JUserID int,
    InterestID int,
     FOREIGN KEY interest_fk(InterestID)
    REFERENCES Interest(InterestID),
-   FOREIGN KEY user_fk(UserID)
-   REFERENCES User(UserID),
-   PRIMARY KEY (UserID, InterestID)
+   FOREIGN KEY Juser_fk(JUserID)
+   REFERENCES JUser(JUserID),
+   PRIMARY KEY (JUserID, InterestID)
 );
 
-CREATE TABLE IF NOT EXISTS UserSkill (
-    UserID int,
+CREATE TABLE IF NOT EXISTS JUserSkill (
+    JUserID int,
    SkillID int,
-    FOREIGN KEY user_fk(UserID)
-   REFERENCES User(UserID),
+    FOREIGN KEY Juser_fk(JUserID)
+   REFERENCES JUser(JUserID),
     FOREIGN KEY skill_fk(SkillID)
    REFERENCES Skill(SkillID),
-   PRIMARY KEY (UserID, SkillID)
+   PRIMARY KEY (JUserID, SkillID)
 );
 
 CREATE TABLE IF NOT EXISTS Contact (
-    PrimaryUserID int PRIMARY KEY,
+    PrimaryJUserID int PRIMARY KEY,
 	ContactID int,
-    FOREIGN KEY pr_fk(PrimaryUserID)
-   REFERENCES User(PrimaryUserID),
-    FOREIGN KEY contact_fk(ContactUserID)
-   REFERENCES User(ContactUserID)
+    FOREIGN KEY pr_fk(PrimaryJUserID)
+   REFERENCES JUser(JUserID),
+    FOREIGN KEY contact_fk(ContactID)
+   REFERENCES JUser(JUserID)
 );
 
 CREATE TABLE IF NOT EXISTS Event (
@@ -70,17 +73,17 @@ CREATE TABLE IF NOT EXISTS Event (
    AdminID int,
    EName text,
     FOREIGN KEY admin_fk(AdminID)
-   REFERENCES User(AdminID)
+   REFERENCES JUser(JUserID)
 );
 
-CREATE TABLE IF NOT EXISTS UserEvent (
-	UserID int,
+CREATE TABLE IF NOT EXISTS JUserEvent (
+	JUserID int,
     EventID int,
-    FOREIGN KEY user_fk(UserID)
-   REFERENCES User(UserID),
+    FOREIGN KEY Juser_fk(JUserID)
+   REFERENCES JUser(JUserID),
    FOREIGN KEY event_fk(EventID)
    REFERENCES Event(EventID),
-   PRIMARY KEY (UserID, EventID)
+   PRIMARY KEY (JUserID, EventID)
    );
 
 CREATE TABLE IF NOT EXISTS Team (
@@ -89,25 +92,25 @@ CREATE TABLE IF NOT EXISTS Team (
     EventID int,
    Name text,
     FOREIGN KEY owner_fk(OwnerID)
-   REFERENCES User(OwnerID),
+   REFERENCES JUser(JUserID),
  FOREIGN KEY event_fk(EventID)
    REFERENCES Event(EventID)
 );
 
 CREATE TABLE IF NOT EXISTS TeamMembers(
     TeamID int,
-   UserID int,
+   JUserID int,
     FOREIGN KEY team_fk(TeamID)
    REFERENCES Team(TeamID),
-    FOREIGN KEY user_fk(UserID)
-   REFERENCES User(UserID),
-   PRIMARY KEY (TeamID, UserID)
+    FOREIGN KEY Juser_fk(JUserID)
+   REFERENCES JUser(JUserID),
+   PRIMARY KEY (TeamID, JUserID)
 );
 
 CREATE TABLE IF NOT EXISTS Auth (
-    UserID int,
-   Username text,
+    JUserID int,
+   JUsername text,
    Password blob,
-    FOREIGN KEY user_fk(UserID)
-   REFERENCES User(UserID)
+    FOREIGN KEY Juser_fk(JUserID)
+   REFERENCES JUser(JUserID)
 );

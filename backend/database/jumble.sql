@@ -29,6 +29,17 @@ CREATE TABLE IF NOT EXISTS Interest (
 Name text
 );
 
+CREATE TABLE IF NOT EXISTS UserLikes (
+	UserMainID int,
+    UserLikedID int,
+    FOREIGN KEY userlikes_usermain_fk(UserMainID)
+REFERENCES JUser(JUserID),
+FOREIGN KEY userlikes_userliked_fk(UserLikedID)
+REFERENCES JUser(JUserID),
+PRIMARY KEY (UserMainID, UserLikedID)
+);
+    
+
 CREATE TABLE IF NOT EXISTS Idea (
    IdeaID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
 Name text

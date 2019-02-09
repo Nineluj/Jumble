@@ -3,6 +3,17 @@ from flask_restplus import fields, Api, Resource, marshal, marshal_with
 import marshmallow
 from app.api import bp
 from app.api import api
+import pymysql.cursors
+
+def getConnection():
+    return pymysql.connect(
+            host='localhost',
+            user='root',
+            password='gitboost0208',
+            db='jumble',
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
 
 user_model = api.model('User',
     {
@@ -74,6 +85,28 @@ contacts_model = api.model('Contacts',
         'contacts' : fields.List(fields.Nested(user_model))
     }
 )
+
+# Wipes the database for development
+@api.route('/wipe')
+class Wipe(Resource):
+    def get(self):
+        cnxn = pymysql.connect(
+            host='localhost',
+            user='root',
+            password='gitboost0208',
+            db='jumble',
+            charset='utf8mb4',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        with cnxn.cursor() as crsr:
+            sql = """
+            CREATE TABLE IF NOT EXISTS JUser (
+            JUserID int AUTO_INCREMENT NOT NULL PRIMARY KEY
+            );
+            """
+            crsr.execute(sql)
+            cnxn.commit()
+            return {'message' : 'Successfully nuked database.'}
 
 
 @api.route('/user/<user_id>')

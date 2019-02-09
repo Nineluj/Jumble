@@ -1,12 +1,15 @@
+@import '../colors';
+
 .content_card {
   .card_swipe_no {
-    background-color: #c95252;
+    background-color: $jumble-red;
   }
   .card_swipe_yes {
-    background-color: #21a823;
+    background-color: $jumble-red;
   }
 
   .card_user {
+    background-color: $jumble-light;
     height: 400px;
 
       .card_user_picture {
@@ -16,11 +19,20 @@
         margin-right: auto;
         height: 280px;
         width: auto;
+
+        border-radius: 50%;
       }
 
       .card_user_info {
         .card_user_info_name {
+          color: black;
           text-align: center;
+
+          background-color: white;
+          height: 95px;
+          margin-top: 12px;
+          border-radius: 38px;
+          padding-top: 27px;
         }
       }
   }

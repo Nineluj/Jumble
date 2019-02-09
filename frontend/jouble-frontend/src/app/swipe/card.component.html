@@ -1,18 +1,32 @@
 <div class="content_card card container">
   <div class="row">
-    <div class="col-sm-4 card_swipe_no">
-      <span class="glyphicon glyphicon-remove"></span>
-    </div>
-    <div class="card_user col-sm-4">
-      <div class="card_picture_container center-block" style="width: 100%;">
-        <img class="card_user_picture" src="{{imgpath}}">
-      </div>
+    <!-- <div class="col-sm-4 card_swipe_no"> -->
+      <!-- <span class="glyphicon glyphicon-remove"></span> -->
+    <!-- </div> -->
+    <div class="card_user col-sm-12" style="margin-top: 30px;">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="card_picture_container">
+              <img class="card_user_picture" src="{{imgpath}}">
+            </div>
+          </div>
 
-      <div class="card_user_info">
-        <h2 class="card_user_info_name">{{firstName + " " + lastName}}</h2>
-      </div>
+          <div class="col-sm-6">
+            <div class="card_user_info">
+              <h2 class="card_user_info_name">{{firstName + " " + lastName}}</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-12" style="padding-top: 20px;">
+            <h1>Interests: Nat Tuck, Cookie Girl</h1>
+          </div>
+        </div>
     </div>
-    <div class="col-sm-4 card_swipe_yes"></div>
+    </div>
+    <!-- <div class="col-sm-4 card_swipe_yes"></div> -->
   </div>
 
 </div>

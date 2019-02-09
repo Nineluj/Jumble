@@ -7,6 +7,7 @@ import { Card } from './swipe/card.component';
 import { ContactsComponent } from './contacts/contacts.component';
 import { ContactsCardComponent } from './contacts/contact_card/contacts.contacts_card';
 import { InfoComponent } from './info/info.component';
+import { BadgeLister } from './swipe/badge/swipe.badgeLister';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { InfoComponent } from './info/info.component';
     ContactsComponent,
     ContactsCardComponent,
     InfoComponent,
-    Card
+    Card,
+    BadgeLister
   ],
   imports: [
     BrowserModule,

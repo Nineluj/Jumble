@@ -9,7 +9,7 @@
   }
 
   .card_user {
-    background-color: $jumble-light;
+    background-color: $jumble-card-bg;
     height: 400px;
 
       .card_user_picture {
@@ -24,15 +24,14 @@
       }
 
       .card_user_info {
+        text-align: left;
+
         .card_user_info_name {
           color: black;
-          text-align: center;
 
           background-color: white;
-          height: 95px;
-          margin-top: 12px;
+          margin-top: 70px;
           border-radius: 38px;
-          padding-top: 27px;
         }
       }
   }

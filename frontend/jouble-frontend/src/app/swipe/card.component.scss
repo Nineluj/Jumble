@@ -1,0 +1,52 @@
+@import '../colors';
+
+.content_card {
+  .card_swipe_no {
+    background-color: $jumble-red;
+  }
+  .card_swipe_yes {
+    background-color: $jumble-red;
+  }
+
+  .card_user {
+    background-color: $jumble-light;
+    height: 400px;
+
+      .card_user_picture {
+        text-align: center;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        height: 280px;
+        width: auto;
+
+        border-radius: 50%;
+      }
+
+      .card_user_info {
+        .card_user_info_name {
+          color: black;
+          text-align: center;
+
+          background-color: white;
+          height: 95px;
+          margin-top: 12px;
+          border-radius: 38px;
+          padding-top: 27px;
+        }
+      }
+  }
+}
+
+
+.card_user {
+  padding: 0;
+}
+
+.card_picture_container {
+  padding: 0;
+}
+
+.card_user_picture {
+  padding: 0;
+}

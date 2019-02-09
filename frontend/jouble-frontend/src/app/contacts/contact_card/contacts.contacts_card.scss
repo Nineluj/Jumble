@@ -1,0 +1,21 @@
+@import '../../colors';
+
+.contacts_section {
+  background-color: $jumble-light;
+}
+
+.contact_card {
+  margin-bottom: 6px;
+  border-radius: 11px;
+  background-color: $jumble-light;
+  font-weight: bold;
+  width: 100%;
+
+  .contact_card_picture {
+    height: 50px;
+    width: auto;
+    padding: 5px;
+
+    border-radius: 50%;
+  }
+}

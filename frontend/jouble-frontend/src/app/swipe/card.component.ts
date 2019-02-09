@@ -19,7 +19,7 @@ const dbBadge: BadgeData = {
 
 const firstTimer: BadgeData = {
   badgeName: 'first',
-  badgeImg: '/assets/badges/firsttimer.png'
+  badgeImg: '/assets/badges/experienced.png'
 };
 
 @Component({

@@ -3,16 +3,17 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { Card } from './components/card.component';
+import { Card } from './swipe/card.component';
 import { ContactsComponent } from './contacts/contacts.component';
-import { SwipeComponent } from './swipe/swipe.component';
+import { ContactsCardComponent } from './contacts/contact_card/contacts.contacts_card';
 import { InfoComponent } from './info/info.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     ContactsComponent,
-    SwipeComponent,
+    ContactsCardComponent,
     InfoComponent,
     Card
   ],

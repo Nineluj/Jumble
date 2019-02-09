@@ -9,5 +9,7 @@ import { BadgeData } from 'app/userService';
 export class BadgeLister {
   title = 'badge_module';
 
-  @Input() data: BadgeData;
+  @Input() badgeData: BadgeData[];
+
+  constructor() { }
 }

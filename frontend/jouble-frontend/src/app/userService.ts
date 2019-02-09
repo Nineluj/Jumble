@@ -8,7 +8,7 @@ export interface Info {
 
 export interface BadgeData {
   badgeName: string;
-  badgeImg: HTMLImageElement;
+  badgeImg: string;
 }
 
 export class User {

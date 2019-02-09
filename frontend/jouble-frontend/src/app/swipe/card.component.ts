@@ -1,5 +1,21 @@
 import { Component } from '@angular/core';
 import { BadgeLister } from './badge/swipe.badgeLister';
+import { BadgeData } from 'app/userService';
+
+const pythonBadge: BadgeData = {
+  badgeName: 'python',
+  badgeImg: '/assets/badges/python.png'
+};
+
+const jsBadge: BadgeData = {
+  badgeName: 'js',
+  badgeImg: '/assets/badges/javascript.png'
+};
+
+const dbBadge: BadgeData = {
+  badgeName: 'js',
+  badgeImg: '/assets/badges/database.png'
+};
 
 @Component({
   selector: 'swipe_card',
@@ -12,4 +28,7 @@ export class Card {
   firstName = 'Alex';
   lastName = 'Tapley';
   major = 'Computer Engineering';
+
+
+  badges = [pythonBadge, jsBadge, dbBadge];
 }

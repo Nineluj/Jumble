@@ -1,5 +1,13 @@
+@import '../../colors';
+
 .badge_container {
   height: 50px;
   width: auto;
-  background-color: blue;
+  background-color: $jumble-grey;
+  border-radius: 15px;
+
+  .badge {
+    display: inline-block;
+    height: 50px;
+  }
 }

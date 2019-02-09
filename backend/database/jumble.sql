@@ -22,8 +22,7 @@ CREATE TABLE IF NOT EXISTS MajorJUser (
 REFERENCES Major(MajorID),
 FOREIGN KEY majorjuser_user_fk(JUserID)
 REFERENCES JUser(JUserID),
-PRIMARY KEY (MajorID, JUserID)
-);
+PRIMARY KEY (MajorID, JUserID));
 
 CREATE TABLE IF NOT EXISTS Interest (
    InterestID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -47,8 +46,7 @@ InterestID int,
 REFERENCES Interest(InterestID),
 FOREIGN KEY juserinterests_interest_fk(JUserID)
 REFERENCES JUser(JUserID),
-PRIMARY KEY (JUserID, InterestID)
-);
+PRIMARY KEY (JUserID, InterestID));
 
 CREATE TABLE IF NOT EXISTS JUserIdeas (
    JUserID int,
@@ -84,8 +82,7 @@ CREATE TABLE IF NOT EXISTS Event (
 AdminID int,
 EName text,
    FOREIGN KEY event_admin_fk(AdminID)
-REFERENCES JUser(JUserID)
-);
+REFERENCES JUser(JUserID));
 
 CREATE TABLE IF NOT EXISTS JUserEvent (
    JUserID int,
@@ -127,7 +124,7 @@ REFERENCES JUser(JUserID)
 );
 
 CREATE TABLE IF NOT EXISTS Company (
-	CompanyID int PRIMARY KEY,
+	CompanyID int AUTO_INCREMENT PRIMARY KEY,
     Website text,
     Slack text,
     Image blob,
@@ -135,8 +132,8 @@ CREATE TABLE IF NOT EXISTS Company (
     );
 
 CREATE TABLE IF NOT EXISTS Opening (
-	OpeningID int PRIMARY KEY,
-    title text
+	   OpeningID int AUTO_INCREMENT PRIMARY KEY,
+      Title text
     );
 
 CREATE TABLE IF NOT EXISTS CompanyOpenings (

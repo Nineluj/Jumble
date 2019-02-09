@@ -3,10 +3,16 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ContactsComponent } from './contacts/contacts.component';
+import { SwipeComponent } from './swipe/swipe.component';
+import { InfoComponent } from './info/info.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ContactsComponent,
+    SwipeComponent,
+    InfoComponent
   ],
   imports: [
     BrowserModule,

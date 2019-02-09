@@ -1,0 +1,28 @@
+.content_card {
+  .card_swipe_no {
+    background-color: #c95252;
+  }
+  .card_swipe_yes {
+    background-color: #21a823;
+  }
+
+  .card_user {
+    height: 400px;
+
+      .card_user_picture {
+        padding: 20px;
+        text-align: center;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        height: 300px;
+        width: 300px;
+      }
+
+      .card_user_info {
+        .card_user_info_name {
+          text-align: center;
+        }
+      }
+  }
+}

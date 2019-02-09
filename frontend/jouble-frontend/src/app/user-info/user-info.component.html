@@ -1,6 +1,10 @@
-<div class="user-info">
+<div class="user-info" style="background-color: #0d1321;">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 offset-sm-3">
+
   <div class="container" style="padding: 10px 0 15px 0;">
-    <div class="row" style="background-color: #778da9;">
+    <div class="row" style="background-color: #ebebe9; border-radius: 15px;">
       <div class="col-sm-4 offset-sm-4">
         <h3 class="text-center" style="padding-top: 10px;">
           User details
@@ -9,31 +13,31 @@
         <p style="text-align: center;">Make sure your info is up to date! This is what your peers will see.</p>
       </div>
 
-      <div class="col-sm-4 offset-sm-4" style="text-align: center;">
+      <div class="col-sm-8 offset-sm-2" style="text-align: center;">
         <label for="file-input">
           <img src="/assets/upload.svg" style="height: 100px; border-radius: 30%; border: 5px solid black;" />
         </label>
         <input style="display:none;" id="file-input" type="file" accept="image/*">
       </div>
 
-      <div class="col-sm-4 offset-sm-4 form-group">
+      <div class="col-sm-8 offset-sm-2 form-group">
         <label for="email">First Name</label>
         <input class="user_input" type="text" placeholder="Firstname" name="email" id="email" required>
       </div>
 
-      <div class="col-sm-4 offset-sm-4 form-group">
+      <div class="col-sm-8 offset-sm-2 form-group">
         <label for="email">Last Name</label>
         <input class="user_input" type="text" placeholder="Lastname" name="email" id="email" required>
       </div>
 
-      <div class="col-sm-4 offset-sm-4 form-group">
+      <div class="col-sm-8 offset-sm-2 form-group">
         <label for="email">Email</label>
         <input class="user_input" type="text" placeholder="Enter Email" name="email" id="email" required>
       </div>
 
 
 
-      <div class="col-sm-4 offset-sm-4 form-group">
+      <div class="col-sm-8 offset-sm-2 form-group">
         <label for="skillSelect">Select Skills</label>
         <select multiple class="form-control" id="skillSelect">
           <option>Python</option>
@@ -44,7 +48,7 @@
         </select>
       </div>
 
-      <div class="col-sm-4 offset-sm-4 form-group">
+      <div class="col-sm-8 offset-sm-2 form-group">
         <label for="interestSelect">Select Interests</label>
         <select class="user_input" multiple class="form-control" id="interestSelect">
           <option>Robotics</option>
@@ -53,7 +57,7 @@
         </select>
       </div>
 
-      <div class="col-sm-4 offset-sm-4 form-group">
+      <div class="col-sm-8 offset-sm-2 form-group">
         <label for="interestSelect">Select Ideas</label>
         <select class="user_input" multiple class="form-control" id="interestSelect">
           <option>Robotics</option>
@@ -73,4 +77,8 @@
         <button routerLink='/swipe' class="btn btn-primary">Let's Start Swiping!</button>
       </div>
     </div>
+
+  </div>
+</div>
+</div>
   </div>

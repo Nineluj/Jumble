@@ -14,6 +14,15 @@ user_model = api.model('User',
     }
 )
 
+user_model_post = api.model('User', 
+    {
+        'name' : fields.String,
+        'email' : fields.String,
+        'major' : fields.String,
+        'slack' : fields.String
+    }
+)
+
 event_model = api.model('Event', 
     {
         'id' : fields.Integer,
@@ -40,15 +49,22 @@ skills_model = api.model('Skill',
 
 interests_model = api.model('Interests',
     {
-        'user' : fields.Integer,
+        'user' : fields.Nested(user_model),
         'interests' : fields.List(fields.Nested(interest_model))
     }
 )
 
 skills_model = api.model('Skills', 
     {
-        'user' : fields.Integer,
+        'user' : fields.Nested(user_model),
         'skills' : fields.List(fields.Nested(skills_model))
+    }
+)
+
+liked_model = api.model('Likes', 
+    {
+        'user' : fields.Nested(user_model),
+        'likes' : fields.List(fields.Nested(user_model))
     }
 )
 
@@ -72,6 +88,15 @@ class User(Resource):
         'slack' : 'thatOGBooster',
         }
 
+    @api.expect(user_model)
+    def put(self, user_id):
+        # Edit the entry in the db. Return 201 if success
+        return {'message' : 'Successfully update user!'}, 201
+
+    def delete(self, user_id):
+        # Delete the user.
+        return {'message' : 'Successfully deleted the user!'}, 201
+
 @api.route('/users')
 class Users(Resource):
     @api.marshal_list_with(user_model)
@@ -85,6 +110,11 @@ class Users(Resource):
             'slack' : 'thatOGBooster',
             }
         ]
+    
+    @api.expect(user_model_post)
+    def post(self):
+        # Add this to the db. If success, return 201.
+        return {'message' : 'Successfully insert into DB!'}, 201
 
 @api.route('/event/<event_id>')
 class Event(Resource):

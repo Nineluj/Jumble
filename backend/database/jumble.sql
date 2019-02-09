@@ -34,6 +34,11 @@ CREATE TABLE IF NOT EXISTS Interest (
    Name text
 );
 
+CREATE TABLE IF NOT EXISTS Idea (
+    IdeaID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+   Name text
+);
+
 CREATE TABLE IF NOT EXISTS Skill (
     SkillID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
    Name text
@@ -47,6 +52,16 @@ CREATE TABLE IF NOT EXISTS JUserInterests (
    FOREIGN KEY Juser_fk(JUserID)
    REFERENCES JUser(JUserID),
    PRIMARY KEY (JUserID, InterestID)
+);
+
+CREATE TABLE IF NOT EXISTS JUserIdeas (
+    JUserID int,
+   IdeaID int,
+    FOREIGN KEY idea_fk(IdeaID)
+   REFERENCES Idea(IdeaID),
+   FOREIGN KEY Juser_fk(JUserID)
+   REFERENCES JUser(JUserID),
+   PRIMARY KEY (JUserID, IdeaID)
 );
 
 CREATE TABLE IF NOT EXISTS JUserSkill (

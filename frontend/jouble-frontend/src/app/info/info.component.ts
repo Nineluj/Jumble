@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SampleData, User } from 'app/userService';
 import { CurrentCardDataService } from 'app/services/current-card-data.service';
+import * as $ from 'jquery'
 
 @Component({
   selector: 'app-info',
@@ -8,12 +9,13 @@ import { CurrentCardDataService } from 'app/services/current-card-data.service';
   styleUrls: ['./info.component.scss']
 })
 export class InfoComponent implements OnInit {
-
   private name: string;
   private email: string;
   private major: string;
   private slack: string;
-  public faith = "dorial";
+  private interests: string;
+  private skills: string;
+  private ideas: string;
   
   private contacts: User[];
   constructor(private currentCardData: CurrentCardDataService) { 
@@ -32,6 +34,42 @@ export class InfoComponent implements OnInit {
     this.email = this.currentCardData.getEmail();
     this.major = this.currentCardData.getMajor();
     this.slack = this.currentCardData.getSlack();
+  }
+
+  updateInterests(id: number): void {
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:5000/api/interest/' + id,
+      success: this.updateInterestsCallback
+    })
+  }
+
+  updateInterestsCallback(data) {
+    this.interests = data.name;
+  }
+
+  updateSkills(id: number): void {
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:5000/api/skills/' + id,
+      success: this.updateSkillsCallback
+    })
+  }
+
+  updateSkillsCallback(data) {
+    this.skills = data.name;
+  }
+
+  updateIdeas(id: number): void {
+    $.ajax({
+      type: 'POST',
+      url: 'http://localhost:5000/api/ideas/' + id,
+      success: this.updateIdeasCallback
+    })
+  }
+
+  updateIdeasCallback(data) {
+    this.ideas = data.name;
   }
 
 }

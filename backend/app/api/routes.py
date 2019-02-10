@@ -323,14 +323,14 @@ class Fill(Resource):
                     sql = ["""USE jumble;""",
 
                             """INSERT INTO JUser (Image, Name, Email, Slack, FirstHack)
-                            VALUES ('BB.jpg', 'Barry B. Benson', 'bb123@beehive.com', 'barry_bee', FALSE),
-                            ('ChadBradley.jpg', 'Chad Bradley', 'totally@bro.com', 'lit_gainz', TRUE),
-                            ('ChickenLou.jpg', 'Chicken Louis', 'dave@chickenlous.net', 'crispy-luscious_deluxe', FALSE),
-                            ('DorialBeckham.jpg', 'Dorial Green-Beckham', 'nfllegends@retired.com', 'oops-I-did-it-again', TRUE),
-                            ('JosephAoun.jpg', 'Joseph Aoun', 'aoun.j@northeastern.edu', 'flatscreens4lyfe', FALSE),
-                            ('PacoDadog.jpg', 'Paco DaDog', 'oofboof@woof.com', 'big_bad_dog', FALSE),
-                            ('SalVulcano.jpg', 'Sal Vulcano', 'big_loser@impracticaljokers.com', 'tonights_loser', TRUE),
-                            ('TonyBologna.jpg', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE);""",
+                            VALUES ('bb64', 'Barry B. Benson', 'bb123@beehive.com', 'barry_bee', FALSE),
+                            ('chadbradley64', 'Chad Bradley', 'totally@bro.com', 'lit_gainz', TRUE),
+                            ('chickenlous64', 'Chicken Louis', 'dave@chickenlous.net', 'crispy-luscious_deluxe', FALSE),
+                            ('dorialbeckham64', 'Dorial Green-Beckham', 'nfllegends@retired.com', 'oops-I-did-it-again', TRUE),
+                            ('josephaoun64', 'Joseph Aoun', 'aoun.j@northeastern.edu', 'flatscreens4lyfe', FALSE),
+                            ('pacodadog64', 'Paco DaDog', 'oofboof@woof.com', 'big_bad_dog', FALSE),
+                            ('salvulcano64', 'Sal Vulcano', 'big_loser@impracticaljokers.com', 'tonights_loser', TRUE),
+                            ('tonabologna64', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE);""",
 
                             """INSERT INTO Major (Name)
                             VALUES ('Computer Engineering'),

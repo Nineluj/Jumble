@@ -21,6 +21,11 @@ const dbBadge: BadgeData = {
 
 const firstTimer: BadgeData = {
   badgeName: 'first',
+  badgeImg: '/assets/badges/firsttimer.png'
+};
+
+const experienced: BadgeData = {
+  badgeName: 'experienced',
   badgeImg: '/assets/badges/experienced.png'
 };
 
@@ -51,22 +56,27 @@ export class Card {
   lastName = '';
   major = '';
 
-  badges = [firstTimer, design, java, pythonBadge, jsBadge, dbBadge, racket];
+  badges: BadgeData[];
 
+  // badges = [firstTimer, design, java, pythonBadge, jsBadge, dbBadge, racket];
 
   constructor() {
     this.updateCard(false);
   }
 
   loadNewCard(data) {
-    const firstData = data[0];
+    const pick = Math.floor(Math.random() * 5) + 1;
 
-    this.firstName = firstData.name;
-    $( '.card_user_info_name' )[0].textContent = firstData.name;
-    this.major = firstData.major;
-    $( '.card_user_major' )[0].textContent = firstData.major;
+    const chosenData = data[pick];
 
-    $( '.card_user_picture' ).attr('src',  'data:image/png;base64,' + firstData.image);
+    this.firstName = chosenData.name;
+    $( '.card_user_info_name' )[0].textContent = chosenData.name;
+    this.major = chosenData.major;
+    $( '.card_user_major' )[0].textContent = chosenData.major;
+
+    this.badges = chosenData.first_hack ? [firstTimer] : [experienced];
+
+    $( '.card_user_picture' ).attr('src',  'data:image/png;base64,' + chosenData.image);
   }
 
   updateCard(bool) {

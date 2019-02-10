@@ -16,7 +16,7 @@ def getConnection():
     return pymysql.connect(
             host='localhost',
             user='root',
-            password='tapley4656',
+            password='gitboost0208',
             db='jumble',
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor

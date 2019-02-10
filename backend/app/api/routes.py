@@ -15,7 +15,7 @@ def getConnection():
     return pymysql.connect(
             host='localhost',
             user='root',
-            password='gitboost0208',
+            password='tapley4656',
             db='jumble',
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
@@ -66,9 +66,9 @@ interest_model = api.model('Interest',
     }
 )
 
-majoruser_model = api.model('MajorJUser', 
+interest_model_post = api.model('Interest', 
     {
-        'majorID' : fields.Integer,
+        'interestID' : fields.Integer,
         'name' : fields.String
     }
 )
@@ -589,6 +589,25 @@ class Interests(Resource):
         cnxn.close()
         return list_of_interests, 200
 
+@api.route('/interest/<user_id>')
+class GetUserInterest(Resource):
+    @api.marshal_with(interest_model_post)
+    def post(self, user_id):
+        list_of_interests = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT Interest.InterestID, Interest.Name from Interest INNER JOIN JUserInterests ON Interest.InterestID = JUserInterests.InterestID INNER JOIN JUser ON JUser.JUserID = JUserInterests.JUserID WHERE JUser.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchall()
+            cnxn.close()
+            for interest in result:
+                list_of_interests.append({
+                'interestID' : interest['InterestID'],
+                'name' : interest['Name'],
+            })
+        return list_of_interests, 200
+
+
 # Get all majors for all users
 @api.route('/majors')
 class Major(Resource):
@@ -657,10 +676,10 @@ class Events(Resource):
             sql = "SELECT * FROM Event;"
             crsr.execute(sql)
             result = crsr.fetchall()
-            for skill in result:
+            for event in result:
                 list_of_events.append({
-                    'id' : event['SkillID'],
-                    'name' : event['Name'],
+                    'id' : event['EventID'],
+                    'name' : event['EName'],
                 })
         cnxn.close()
         return list_of_events, 200

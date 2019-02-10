@@ -66,9 +66,23 @@ interest_model = api.model('Interest',
     }
 )
 
-majoruser_model = api.model('MajorJUser', 
+interest_model_post = api.model('Interest', 
     {
-        'majorID' : fields.Integer,
+        'interestID' : fields.Integer,
+        'name' : fields.String
+    }
+)
+
+idea_model_post = api.model('Idea', 
+    {
+        'ideaID' : fields.Integer,
+        'name' : fields.String
+    }
+)
+
+skills_model_post = api.model('Skills', 
+    {
+        'skillID' : fields.Integer,
         'name' : fields.String
     }
 )
@@ -541,34 +555,48 @@ class User(Resource):
             crsr.execute(sql, (user_id,))
             result = crsr.fetchone()
             cnxn.close()
+            f = open(UPLOAD_FOLDER + result['Image'], "r")
             return {
                 'id' : result['JUserID'],
                 'name' : result['Name'],
                 'email' : result['Email'],
                 'major' : result['major.Name'],
                 'slack' : result['Slack'],
+                'image' : f.read()
             }, 200
         return {'error' : 500}, 500
 
-# Get data regarding this JUser
-@api.route('/user/<user_id>')
-class User(Resource):
-    @api.marshal_with(user_model)
+@api.route('/contacts/<user_id>')
+class Contacts(Resource):
+    @api.marshal_list_with(user_id_model)
     def get(self, user_id):
         cnxn = getConnection()
         with cnxn.cursor() as crsr:
-            sql = "SELECT * FROM jumble.JUser as user INNER JOIN jumble.MajorJUser as major_tie ON user.JUserID = major_tie.JUserID INNER JOIN jumble.Major as major ON major_tie.MajorID = major.MajorID WHERE user.JUserID = %s"
-            crsr.execute(sql, (user_id,))
-            result = crsr.fetchone()
+            sql = """
+            SELECT JUserID, Image, Name, Email, Slack, FirstHack FROM JUser INNER JOIN
+            (SELECT tbl1.alt AS users FROM
+            (SELECT UserLikedID as 'alt' FROM JUser INNER JOIN UserLikes 
+            ON JUser.JUserID = UserLikes.UserMainID
+            WHERE JUser.JUserID = %s) tbl1
+            INNER JOIN
+            (SELECT UserMainID as 'alt' FROM JUser INNER JOIN UserLikes 
+            ON JUser.JUserID = UserLikes.UserLikedID
+            WHERE JUser.JUserID = %s) tbl2 
+            ON tbl1.alt = tbl2.alt) tbl3 
+            ON JUser.JUserID = tbl3.users;
+            """
+            crsr.execute(sql, (str(user_id),str(user_id)))
+            result = crsr.fetchall()
             cnxn.close()
-            return {
-                'id' : result['JUserID'],
-                'name' : result['Name'],
-                'email' : result['Email'],
-                'major' : result['major.Name'],
-                'slack' : result['Slack'],
-            }, 200
-        return {'error' : 500}, 500
+            payload = []
+            for user in result:
+                payload.append(
+                    {
+                        'id' : user['JUserID'],
+                    }
+                )
+            return payload, 200
+        return {'message' : 'server error'}, 500
 
 # Get all interests for all users
 @api.route('/interests')
@@ -588,6 +616,25 @@ class Interests(Resource):
                 })
         cnxn.close()
         return list_of_interests, 200
+
+@api.route('/interest/<user_id>')
+class GetUserInterest(Resource):
+    @api.marshal_with(interest_model_post)
+    def post(self, user_id):
+        list_of_interests = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT Interest.InterestID, Interest.Name from Interest INNER JOIN JUserInterests ON Interest.InterestID = JUserInterests.InterestID INNER JOIN JUser ON JUser.JUserID = JUserInterests.JUserID WHERE JUser.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchall()
+            cnxn.close()
+            for interest in result:
+                list_of_interests.append({
+                'interestID' : interest['InterestID'],
+                'name' : interest['Name'],
+            })
+        return list_of_interests, 200
+
 
 # Get all majors for all users
 @api.route('/majors')
@@ -627,6 +674,24 @@ class Ideas(Resource):
         cnxn.close()
         return list_of_ideas, 200
 
+@api.route('/ideas/<user_id>')
+class GetUserIdeas(Resource):
+    @api.marshal_with(idea_model_post)
+    def post(self, user_id):
+        list_of_ideas = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT Idea.IdeaID, Idea.Name from Idea INNER JOIN JUserIdeas ON Idea.IdeaID = JUserIdeas.IdeaID INNER JOIN JUser ON JUser.JUserID = JUserIdeas.JUserID WHERE JUser.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchall()
+            cnxn.close()
+            for idea in result:
+                list_of_ideas.append({
+                'ideaID' : idea['IdeaID'],
+                'name' : idea['Name'],
+            })
+        return list_of_ideas, 200
+
 # Get all skills for all users
 @api.route('/skills')
 class Skills(Resource):
@@ -646,6 +711,24 @@ class Skills(Resource):
         cnxn.close()
         return list_of_skills, 200
 
+@api.route('/skill/<user_id>')
+class GetUserSkills(Resource):
+    @api.marshal_with(skills_model_post)
+    def post(self, user_id):
+        list_of_skills = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT Skill.SkillID, Skill.Name from Skill INNER JOIN JUserSkill ON Skill.SkillID = JUserSkill.SkillID INNER JOIN JUser ON JUser.JUserID = JUserSkill.JUserID WHERE JUser.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchall()
+            cnxn.close()
+            for skill in result:
+                list_of_skills.append({
+                'skillID' : skill['SkillID'],
+                'name' : skill['Name'],
+                })
+        return list_of_skills, 200
+
 # Get all events for all users
 @api.route('/events')
 class Events(Resource):
@@ -657,10 +740,10 @@ class Events(Resource):
             sql = "SELECT * FROM Event;"
             crsr.execute(sql)
             result = crsr.fetchall()
-            for skill in result:
+            for event in result:
                 list_of_events.append({
-                    'id' : event['SkillID'],
-                    'name' : event['Name'],
+                    'id' : event['EventID'],
+                    'name' : event['EName'],
                 })
         cnxn.close()
         return list_of_events, 200
@@ -785,7 +868,7 @@ class Event(Resource):
     @api.marshal_with(event_model_list)
     def get(self, event_id):
         try:
-            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID INNER JOIN JUser ON JUserEvent.JUserID = JUser.JUserID WHERE Event.EventID = %s"
+            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID INNER JOIN JUser ON JUserEvent.JUserID = JUser.JUserID INNER JOIN MajorJUser ON MajorJUser.JUserID = JUserEvent.JUserID INNER JOIN Major ON Major.MajorID = MajorJUser.MajorID WHERE Event.EventID = %s"
             cnxn = getConnection()
             crsr = cnxn.cursor()
             crsr.execute(sql, (event_id))
@@ -798,11 +881,12 @@ class Event(Resource):
                     'id' : atendee['JUser.JUserID'],
                     'name' : atendee['Name'],
                     'email' : atendee['Email'],
-                    'major' : 'Boosting',
+                    'major' : atendee['Name'],
                     'slack' : atendee['Slack'],
+                    'first_hack' : atendee['FirstHack']
                 })
 
-            sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID WHERE Event.EventID = %s"
+            sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID JOIN MajorJUser ON MajorJUser.JUserID = JUser.JUserID INNER JOIN Major ON Major.MajorID = MajorJUser.MajorID WHERE Event.EventID = %s"
             cnxn = getConnection()
             crsr = cnxn.cursor()
             crsr.execute(sql, (event_id))
@@ -816,8 +900,9 @@ class Event(Resource):
                                 'id' : result_admin['AdminID'],
                                 'name' : result_admin['Name'],
                                 'email' : result_admin['Email'],
-                                'major' : 'Boosting',
+                                'major' : result_admin['Name'],
                                 'slack' : result_admin['Slack'],
+                                'first_hack' : atendee['FirstHack']
                             },
                 'attendies' : list_of_attendies
             }, 200

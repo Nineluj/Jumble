@@ -323,14 +323,14 @@ class Fill(Resource):
                     sql = ["""USE jumble;""",
 
                             """INSERT INTO JUser (Image, Name, Email, Slack, FirstHack)
-                            VALUES ('BB.jpg', 'Barry B. Benson', 'bb123@beehive.com', 'barry_bee', FALSE),
-                            ('ChadBradley.jpg', 'Chad Bradley', 'totally@bro.com', 'lit_gainz', TRUE),
-                            ('ChickenLou.jpg', 'Chicken Louis', 'dave@chickenlous.net', 'crispy-luscious_deluxe', FALSE),
-                            ('DorialBeckham.jpg', 'Dorial Green-Beckham', 'nfllegends@retired.com', 'oops-I-did-it-again', TRUE),
-                            ('JosephAoun.jpg', 'Joseph Aoun', 'aoun.j@northeastern.edu', 'flatscreens4lyfe', FALSE),
-                            ('PacoDadog.jpg', 'Paco DaDog', 'oofboof@woof.com', 'big_bad_dog', FALSE),
-                            ('SalVulcano.jpg', 'Sal Vulcano', 'big_loser@impracticaljokers.com', 'tonights_loser', TRUE),
-                            ('TonyBologna.jpg', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE);""",
+                            VALUES ('bb64', 'Barry B. Benson', 'bb123@beehive.com', 'barry_bee', FALSE),
+                            ('chadbradley64', 'Chad Bradley', 'totally@bro.com', 'lit_gainz', TRUE),
+                            ('chickenlous64', 'Chicken Louis', 'dave@chickenlous.net', 'crispy-luscious_deluxe', FALSE),
+                            ('dorialbeckham64', 'Dorial Green-Beckham', 'nfllegends@retired.com', 'oops-I-did-it-again', TRUE),
+                            ('josephaoun64', 'Joseph Aoun', 'aoun.j@northeastern.edu', 'flatscreens4lyfe', FALSE),
+                            ('pacodadog64', 'Paco DaDog', 'oofboof@woof.com', 'big_bad_dog', FALSE),
+                            ('salvulcano64', 'Sal Vulcano', 'big_loser@impracticaljokers.com', 'tonights_loser', TRUE),
+                            ('tonybologna64', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE);""",
 
                             """INSERT INTO Major (Name)
                             VALUES ('Computer Engineering'),
@@ -804,7 +804,7 @@ class Event(Resource):
     @api.marshal_with(event_model_list)
     def get(self, event_id):
         try:
-            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID INNER JOIN JUser ON JUserEvent.JUserID = JUser.JUserID WHERE Event.EventID = %s"
+            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID INNER JOIN JUser ON JUserEvent.JUserID = JUser.JUserID INNER JOIN MajorJUser ON MajorJUser.JUserID = JUserEvent.JUserID INNER JOIN Major ON Major.MajorID = MajorJUser.MajorID WHERE Event.EventID = %s"
             cnxn = getConnection()
             crsr = cnxn.cursor()
             crsr.execute(sql, (event_id))
@@ -817,11 +817,12 @@ class Event(Resource):
                     'id' : atendee['JUser.JUserID'],
                     'name' : atendee['Name'],
                     'email' : atendee['Email'],
-                    'major' : 'Boosting',
+                    'major' : atendee['Name'],
                     'slack' : atendee['Slack'],
+                    'first_hack' : atendee['FirstHack']
                 })
 
-            sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID WHERE Event.EventID = %s"
+            sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID JOIN MajorJUser ON MajorJUser.JUserID = JUser.JUserID INNER JOIN Major ON Major.MajorID = MajorJUser.MajorID WHERE Event.EventID = %s"
             cnxn = getConnection()
             crsr = cnxn.cursor()
             crsr.execute(sql, (event_id))
@@ -835,8 +836,9 @@ class Event(Resource):
                                 'id' : result_admin['AdminID'],
                                 'name' : result_admin['Name'],
                                 'email' : result_admin['Email'],
-                                'major' : 'Boosting',
+                                'major' : result_admin['Name'],
                                 'slack' : result_admin['Slack'],
+                                'first_hack' : atendee['FirstHack']
                             },
                 'attendies' : list_of_attendies
             }, 200

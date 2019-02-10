@@ -1,5 +1,5 @@
 <div class="content_card card container">
-  <div class="row">
+  <div class="row" style="color: #ebebe9;">
     <!-- <div class="col-sm-4 card_swipe_no"> -->
       <!-- <span class="glyphicon glyphicon-remove"></span> -->
     <!-- </div> -->
@@ -15,14 +15,23 @@
           <div class="col-sm-6">
             <div class="card_user_info">
               <h2 class="card_user_info_name">{{firstName + " " + lastName}}</h2>
+              <h5 class="card_user_major">{{major}}</h5>
+            </div>
+
+            <div style="margin-top: 20px;">
+              <p style="margin-bottom: 0; color:black;">Badges</p>
+              <badge-lister [badgeData]=badges></badge-lister>
             </div>
           </div>
         </div>
 
-        <div class="row">
-          <div class="col-sm-12" style="padding-top: 20px;">
-            <h1>Interests: Nat Tuck, Cookie Girl</h1>
+        <div class="row" style="padding-top: 20px; text-align: center;">
+          <div class="col-sm-6" style="padding-top: 20px;">
+            <img style="height: 60px; cursor: pointer" src="../../assets/x-circle.svg">
           </div>
+          <div class="col-sm-6" style="padding-top: 20px;">
+              <img style="height: 60px; cursor: pointer" src="../../assets/check-circle.svg">
+            </div>
         </div>
     </div>
     </div>

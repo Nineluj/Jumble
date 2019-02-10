@@ -2,6 +2,7 @@
 
 .bg-danger {
   margin-bottom: 0 !important;
+  padding: 0;
 }
 
 .mb-3 {
@@ -10,10 +11,9 @@
 }
 
 * {
-  background-color: $jumble-light;
-  // color: white;
+  font-family: 'Segoe UI', 'Lucida Grande','Ubuntu','sans-serif';
 }
 
-.body {
+.card-header, .text-center {
   background-color: $jumble-bg;
 }

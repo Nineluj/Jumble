@@ -1,9 +1,14 @@
 // import {Http} from '@angular/common/http';
 // import { Injectable } from '@angular/core';
 
-interface Info {
+export interface Info {
   type: string;
   info: string;
+}
+
+export interface BadgeData {
+  badgeName: string;
+  badgeImg: string;
 }
 
 export class User {

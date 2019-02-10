@@ -1,6 +1,10 @@
 <div class="card container contacts_section" style="height: 700px">
-  <h5>Contacts</h5>
+  <h5 class="card-header">Contacts</h5>
+  <div class="card-body">
   <div class="row" *ngFor="let contact of contacts">
       <contacts-card [contact]=contact class="contacts_outline"></contacts-card>
-    </div>
+  </div>
+  <div *ngIf="contacts.length === 0">You don't have any contacts yet, swipe to find potential teammates!</div>
+  </div>
+
 </div>

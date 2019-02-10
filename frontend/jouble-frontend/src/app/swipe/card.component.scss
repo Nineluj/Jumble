@@ -1,6 +1,8 @@
 @import '../colors';
 
 .content_card {
+  background-color: #ebebe9;
+
   .card_swipe_no {
     background-color: $jumble-red;
   }
@@ -9,7 +11,7 @@
   }
 
   .card_user {
-    background-color: $jumble-light;
+    background-color: #ebebe9;
     height: 400px;
 
       .card_user_picture {
@@ -24,15 +26,16 @@
       }
 
       .card_user_info {
-        .card_user_info_name {
-          color: black;
-          text-align: center;
+        color: black;
+        padding: 10px 0 10px 15px;
+        margin-top: 50px;
+        border-radius: 15px;
 
-          background-color: white;
-          height: 95px;
-          margin-top: 12px;
+        text-align: left;
+        background-color: white;
+
+        .card_user_info_name {
           border-radius: 38px;
-          padding-top: 27px;
         }
       }
   }

@@ -518,82 +518,77 @@ class User(Resource):
             }, 200
         return {'error' : 500}, 500
 
-
-    @api.expect(user_model)
-    def put(self, user_id):
-        # Edit the entry in the db. Return 201 if success
-        return {'message' : 'Successfully update user!'}, 201
-
-    def delete(self, user_id):
-        # Delete the user.
-        return {'message' : 'Successfully deleted the user!'}, 201
-
 @api.route('/users')
 class Users(Resource):
     @api.marshal_list_with(user_model)
     def get(self):
-        return [
-                {
-            'id' : 0,
-            'name' : 'The OG Git Booster',
-            'email' : 'thatOGboost@boost.org',
-            'major' : 'Boosting',
-            'slack' : 'thatOGBooster',
-            }
-        ]
+        list_of_users = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM jumble.JUser as user INNER JOIN jumble.MajorJUser as major_tie ON user.JUserID = major_tie.JUserID INNER JOIN jumble.Major as major ON major_tie.MajorID = major.MajorID"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for user in result:
+                list_of_users.append({
+                    'id' : user['JUserID'],
+                    'name' : user['Name'],
+                    'email' : user['Email'],
+                    'major' : user['major.Name'],
+                    'slack' : user['Slack'],
+                })
+        cnxn.close()
+        return list_of_users, 200
     
     @api.expect(user_model_post)
     def post(self):
         user = api.payload
         cnxn = getConnection()
-        #try:
-        with cnxn.cursor() as crsr:
-            # Determine if the Major already Exists
-            crsr.execute("SELECT MajorID FROM Major WHERE Name = %s", (user['major']))
-            major = crsr.fetchone()
-            if major == None:
-                crsr.execute("INSERT INTO jumble.Major (Name) VALUES (%s)", (user['name']))
-            cnxn.commit()
-        cnxn.close()
-        
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            crsr.execute("INSERT INTO jumble.JUser (Name, Email, Slack) VALUES (%s, %s, %s);", (user['name'], user['email'], user['slack']))
-            cnxn.commit()
-        cnxn.close()
-        
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            crsr.execute("SELECT MajorID FROM Major WHERE Name = %s", (user['major']))
-            major_id = crsr.fetchone()
-
-            crsr.execute("SELECT JUserID FROM jumble.JUser WHERE Email = %s", (user['email']))
-            user_id = crsr.fetchone()
-
-            crsr.execute("INSERT INTO jumble.MajorJUser (MajorID, JUserID) VALUES (%s, %s);", (major_id['MajorID'], user_id['JUserID']))
-            cnxn.commit()
-        cnxn.close()
-
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            if 'first_hack' in user:
-                crsr.execute("""UPDATE jumble.JUser SET FirstHack = %s""", (user['first_hack']))
+        try:
+            with cnxn.cursor() as crsr:
+                # Determine if the Major already Exists
+                crsr.execute("SELECT MajorID FROM Major WHERE Name = %s", (user['major']))
+                major = crsr.fetchone()
+                if major == None:
+                    crsr.execute("INSERT INTO jumble.Major (Name) VALUES (%s)", (user['name']))
                 cnxn.commit()
-        cnxn.close()
-
-        # This is trash and needs to be fixed
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            if 'image' in user:
-                crsr.execute("UPDATE jumble.JUser SET Image = ...... WHERE JUser.Email = ?", (user['image'], user['email']))
+            cnxn.close()
+            
+            cnxn = getConnection()
+            with cnxn.cursor() as crsr:
+                crsr.execute("INSERT INTO jumble.JUser (Name, Email, Slack) VALUES (%s, %s, %s);", (user['name'], user['email'], user['slack']))
                 cnxn.commit()
-        cnxn.close()
+            cnxn.close()
+            
+            cnxn = getConnection()
+            with cnxn.cursor() as crsr:
+                crsr.execute("SELECT MajorID FROM Major WHERE Name = %s", (user['major']))
+                major_id = crsr.fetchone()
 
-        return {'successfully insert user into jumble' : 200}
-        #except:
-        #    return {'unable to insert user into jumble' : 500}
+                crsr.execute("SELECT JUserID FROM jumble.JUser WHERE Email = %s", (user['email']))
+                user_id = crsr.fetchone()
 
-        #return {'message' : 'Successfully insert into DB!'}, 201
+                crsr.execute("INSERT INTO jumble.MajorJUser (MajorID, JUserID) VALUES (%s, %s);", (major_id['MajorID'], user_id['JUserID']))
+                cnxn.commit()
+            cnxn.close()
+
+            cnxn = getConnection()
+            with cnxn.cursor() as crsr:
+                if 'first_hack' in user:
+                    crsr.execute("""UPDATE jumble.JUser SET FirstHack = %s""", (user['first_hack']))
+                    cnxn.commit()
+            cnxn.close()
+
+            # This is trash and needs to be fixed
+            cnxn = getConnection()
+            with cnxn.cursor() as crsr:
+                if 'image' in user:
+                    crsr.execute("UPDATE jumble.JUser SET Image = ...... WHERE JUser.Email = ?", (user['image'], user['email']))
+                    cnxn.commit()
+            cnxn.close()
+
+            return {'successfully insert user into jumble' : 200}
+        except:
+            return {'unable to insert user into jumble' : 500}
 
 @api.route('/event/<event_id>')
 class Event(Resource):

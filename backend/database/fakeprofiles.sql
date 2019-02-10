@@ -81,6 +81,21 @@ VALUES ('Green Engineering'),
  (8, 3),
  (8, 6);
  
+INSERT INTO UserDislikes (UserMainID, UserDislikedID)
+ VALUES (1, 5),
+ (1, 7),
+ (2, 3),
+ (2, 7),
+ (3, 5),
+ (4, 1),
+ (4, 3),
+ (5, 6),
+ (5, 2),
+ (6, 2),
+ (6, 7),
+ (8, 2),
+ (8, 7);
+ 
  INSERT INTO Idea (Name)
  VALUES ('Green Engineering'),
 ('Animals'),

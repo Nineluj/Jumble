@@ -40,6 +40,16 @@ REFERENCES JUser(JUserID),
 PRIMARY KEY (UserMainID, UserLikedID)
 );
 
+CREATE TABLE IF NOT EXISTS UserDislikes (
+	UserMainID int,
+    UserDislikedID int,
+    FOREIGN KEY userdislikes_usermain_fk(UserMainID)
+	REFERENCES JUser(JUserID),
+	FOREIGN KEY userdislikes_userdisliked_fk(UserDislikedID)
+	REFERENCES JUser(JUserID),
+	PRIMARY KEY (UserMainID, UserDislikedID)
+);
+
 CREATE TABLE IF NOT EXISTS Idea (
    IdeaID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
 Name text

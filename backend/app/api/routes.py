@@ -593,22 +593,6 @@ class Major(Resource):
         cnxn.close()
         return list_of_majors, 200
 
-@api.route('/majorUser/<user_id>')
-class Majors(Resource):
-    @api.marshal_with(majoruser_model)
-    def get(self, user_id):
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT Major.MajorID, Major.Name from Major INNER JOIN MajorJUser ON Major.MajorID = MajorJUser.MajorID INNER JOIN JUser ON JUser.JUserID = MajorJUser.JUserID WHERE JUser.JUserID = %s"
-            crsr.execute(sql, (user_id,))
-            result = crsr.fetchone()
-            return {
-                'majorID' : result['MajorID'],
-                'name' : result['Name']
-            }, 200
-        cnxn.close()
-        return {'error': 500}, 500
-
 # Gets all ideas for all users
 @api.route('/ideas')
 class Ideas(Resource):

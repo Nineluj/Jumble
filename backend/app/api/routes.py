@@ -566,26 +566,6 @@ class User(Resource):
             }, 200
         return {'error' : 500}, 500
 
-# Get data regarding this JUser
-@api.route('/user/<user_id>')
-class User(Resource):
-    @api.marshal_with(user_model)
-    def get(self, user_id):
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT * FROM jumble.JUser as user INNER JOIN jumble.MajorJUser as major_tie ON user.JUserID = major_tie.JUserID INNER JOIN jumble.Major as major ON major_tie.MajorID = major.MajorID WHERE user.JUserID = %s"
-            crsr.execute(sql, (user_id,))
-            result = crsr.fetchone()
-            cnxn.close()
-            return {
-                'id' : result['JUserID'],
-                'name' : result['Name'],
-                'email' : result['Email'],
-                'major' : result['major.Name'],
-                'slack' : result['Slack'],
-            }, 200
-        return {'error' : 500}, 500
-
 # Get all interests for all users
 @api.route('/interests')
 class Interests(Resource):
@@ -714,7 +694,7 @@ class GetUserSkills(Resource):
                 list_of_skills.append({
                 'skillID' : skill['SkillID'],
                 'name' : skill['Name'],
-            })
+                })
         return list_of_skills, 200
 
 # Get all events for all users

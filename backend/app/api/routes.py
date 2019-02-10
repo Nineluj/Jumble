@@ -51,6 +51,13 @@ interest_model = api.model('Interest',
     }
 )
 
+major_model = api.model('Major', 
+    {
+        'id' : fields.Integer,
+        'name' : fields.String
+    }
+)
+
 idea_model = api.model('Idea', 
     {
         'id' : fields.Integer,
@@ -502,8 +509,25 @@ class Fill(Resource):
             except:
                 return {'error': 500}, 500
 
+@api.route('/user/<user_id>')
+class User(Resource):
+    @api.marshal_with(user_model)
+    def get(self, user_id):
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM jumble.JUser as user INNER JOIN jumble.MajorJUser as major_tie ON user.JUserID = major_tie.JUserID INNER JOIN jumble.Major as major ON major_tie.MajorID = major.MajorID WHERE user.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchone()
+            cnxn.close()
+            return {
+                'id' : result['JUserID'],
+                'name' : result['Name'],
+                'email' : result['Email'],
+                'major' : result['major.Name'],
+                'slack' : result['Slack'],
+            }, 200
+        return {'error' : 500}, 500
 
-            
 
 @api.route('/user/<user_id>')
 class User(Resource):
@@ -524,6 +548,7 @@ class User(Resource):
             }, 200
         return {'error' : 500}, 500
 
+# Get all interests for all users
 @api.route('/interests')
 class Interests(Resource):
     @api.marshal_list_with(interest_model)
@@ -542,6 +567,26 @@ class Interests(Resource):
         cnxn.close()
         return list_of_interests, 200
 
+# Get all majors for all users
+@api.route('/majors')
+class Majors(Resource):
+    @api.marshal_list_with(major_model)
+    def get(self):
+        list_of_majors = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Major;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for major in result:
+                list_of_majors.append({
+                    'id' : major['MajorID'],
+                    'name' : major['Name'],
+                })
+        cnxn.close()
+        return list_of_majors, 200
+
+# Gets all ideas for all users
 @api.route('/ideas')
 class Ideas(Resource):
     @api.marshal_list_with(idea_model)
@@ -560,6 +605,7 @@ class Ideas(Resource):
         cnxn.close()
         return list_of_ideas, 200
 
+# Get all skills for all users
 @api.route('/skills')
 class Skills(Resource):
     @api.marshal_list_with(skill_model)
@@ -578,6 +624,7 @@ class Skills(Resource):
         cnxn.close()
         return list_of_skills, 200
 
+# Get all events for all users
 @api.route('/events')
 class Events(Resource):
     @api.marshal_list_with(event_model)
@@ -595,6 +642,7 @@ class Events(Resource):
                 })
         cnxn.close()
         return list_of_events, 200
+
 
 
 @api.route('/users')

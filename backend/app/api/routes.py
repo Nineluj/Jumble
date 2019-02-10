@@ -7,6 +7,7 @@ import pymysql.cursors
 import requests
 import time
 import os 
+import random
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 UPLOAD_FOLDER = dir_path + '/user-uploads/'
@@ -641,6 +642,35 @@ class Contacts(Resource):
                 )
             return payload, 200
         return {'message' : 'server error'}, 500
+
+# Gets the next image for the current user.
+@api.route('/next<user_id>')
+class Next(Resource):
+    @api.marshal_with(user_id_model)
+    def get(self):
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = """
+            SELECT JUser.JUserID FROM JUser LEFT JOIN 
+            (SELECT UID FROM
+            (SELECT UserLikedID AS UID FROM JUser INNER JOIN UserLikes ON 
+            UserLikes.UserMainID = JUser.JUserID WHERE JUser.JUserID = '2') t1
+            UNION
+            (SELECT UserDisLikedID AS UID FROM JUser INNER JOIN UserDislikes ON 
+            UserDislikes.UserMainID = JUser.JUserID WHERE JUser.JUserID = '2')) t3
+            ON t3.UID = JUser.JUserID WHERE t3.UID IS NULL;
+            """
+            crsr.execute(sql)
+            payload = []
+            result = crsr.fetchall()
+            cnxn.close()
+            for r in result:
+                payload.append(r['JUserID'])
+            return {
+                'id' : random.choice(payload)
+            }, 200
+        return 400
+
 
 # Get all interests for all users
 @api.route('/interests')

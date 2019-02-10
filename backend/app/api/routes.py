@@ -647,20 +647,20 @@ class Contacts(Resource):
 @api.route('/next<user_id>')
 class Next(Resource):
     @api.marshal_with(user_id_model)
-    def get(self):
+    def get(self, user_id):
         cnxn = getConnection()
         with cnxn.cursor() as crsr:
             sql = """
             SELECT JUser.JUserID FROM JUser LEFT JOIN 
             (SELECT UID FROM
             (SELECT UserLikedID AS UID FROM JUser INNER JOIN UserLikes ON 
-            UserLikes.UserMainID = JUser.JUserID WHERE JUser.JUserID = '2') t1
+            UserLikes.UserMainID = JUser.JUserID WHERE JUser.JUserID = %s) t1
             UNION
             (SELECT UserDisLikedID AS UID FROM JUser INNER JOIN UserDislikes ON 
-            UserDislikes.UserMainID = JUser.JUserID WHERE JUser.JUserID = '2')) t3
+            UserDislikes.UserMainID = JUser.JUserID WHERE JUser.JUserID = %s)) t3
             ON t3.UID = JUser.JUserID WHERE t3.UID IS NULL;
             """
-            crsr.execute(sql)
+            crsr.execute(sql, (str(user_id), str(user_id)))
             payload = []
             result = crsr.fetchall()
             cnxn.close()

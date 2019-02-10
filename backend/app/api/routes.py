@@ -814,8 +814,9 @@ class Event(Resource):
                     'id' : atendee['JUser.JUserID'],
                     'name' : atendee['Name'],
                     'email' : atendee['Email'],
-                    'major' : atendee['Major'],
+                    'major' : atendee['Name'],
                     'slack' : atendee['Slack'],
+                    'first_hack' : atendee['FirstHack']
                 })
 
             sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID JOIN MajorJUser ON MajorJUser.JUserID = JUser.JUserID INNER JOIN Major ON Major.MajorID = MajorJUser.MajorID WHERE Event.EventID = %s"
@@ -832,8 +833,9 @@ class Event(Resource):
                                 'id' : result_admin['AdminID'],
                                 'name' : result_admin['Name'],
                                 'email' : result_admin['Email'],
-                                'major' : result_admin['Major'],
+                                'major' : result_admin['Name'],
                                 'slack' : result_admin['Slack'],
+                                'first_hack' : atendee['FirstHack']
                             },
                 'attendies' : list_of_attendies
             }, 200

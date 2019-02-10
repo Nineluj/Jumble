@@ -13,6 +13,7 @@ export class InfoComponent implements OnInit {
   private email: string;
   private major: string;
   private slack: string;
+  public faith = "dorial";
   
   private contacts: User[];
   constructor(private currentCardData: CurrentCardDataService) { 
@@ -24,6 +25,13 @@ export class InfoComponent implements OnInit {
     this.email = this.currentCardData.getEmail();//"email@email.com";
     this.major = this.currentCardData.getMajor();//"CE - TEST";
     this.slack = this.currentCardData.getSlack();//this.contacts[0].slackUsername;
+  }
+
+  public updateData() {
+    this.name = this.currentCardData.getFirstName();
+    this.email = this.currentCardData.getEmail();
+    this.major = this.currentCardData.getMajor();
+    this.slack = this.currentCardData.getSlack();
   }
 
 }

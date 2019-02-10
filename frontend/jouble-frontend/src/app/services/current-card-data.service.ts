@@ -32,13 +32,32 @@ export class CurrentCardDataService {
   getFirstName(): string {
     return this.firstName;
   }
+
+  setFirstName(name: string) {
+    this.firstName = name;
+  }
+
   getEmail(): string {
     return this.email;
   }
+
+  setEmail(email: string): void {
+    this.email = email;
+  }
+
   getMajor(): string {
     return this.major;
   }
+
+  setMajor(major: string): void {
+    this.major = major;
+  }
+
   getSlack(): string {
     return this.slack;
+  }
+
+  setSlack(slack: string): void {
+    this.slack = slack;
   }
 }

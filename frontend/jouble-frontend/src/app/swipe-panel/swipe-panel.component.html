@@ -7,8 +7,8 @@
           <app-contacts></app-contacts>
         </div>
         <div class="col-lg-9" style="background-color: white;">
-          <swipe_card></swipe_card>
-          <app-info></app-info>
+          <swipe_card #swipeCard (click)="updateCard()"></swipe_card>
+          <app-info #infoTable></app-info>
         </div>
       </div>
     </div>

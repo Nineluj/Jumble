@@ -588,6 +588,28 @@ class Likes(Resource):
             return payload, 200
         return 400
 
+@api.route('/dislikes/<user_id>')
+class Dislikes(Resource):
+    def get(self, user_id):
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = """
+            SELECT UserDislikedID FROM 
+            JUser INNER JOIN UserDislikes ON
+            JUser.JUserID = UserDislikes.UserMainID 
+            WHERE UserMainID = %s
+            """
+            crsr.execute(sql, (str(user_id),))
+            result = crsr.fetchall()
+            cnxn.close()
+            payload = []
+            for liked_person in result:
+                payload.append({
+                    'id' : liked_person['UserDislikedID']
+                })
+            return payload, 200
+        return 400
+
 @api.route('/contacts/<user_id>')
 class Contacts(Resource):
     @api.marshal_list_with(user_id_model)

@@ -65,6 +65,13 @@ skill_model = api.model('Skill',
     }
 )
 
+event_model = api.model('Event',
+    {
+        'id' : fields.Integer,
+        'name' : fields.String
+    }
+)
+
 interests_model = api.model('Interests',
     {
         'user' : fields.Nested(user_model),
@@ -518,7 +525,7 @@ class User(Resource):
         return {'error' : 500}, 500
 
 @api.route('/interests')
-class Skills(Resource):
+class Interests(Resource):
     @api.marshal_list_with(interest_model)
     def get(self):
         list_of_interests = []
@@ -536,7 +543,7 @@ class Skills(Resource):
         return list_of_interests, 200
 
 @api.route('/ideas')
-class Skills(Resource):
+class Ideas(Resource):
     @api.marshal_list_with(idea_model)
     def get(self):
         list_of_ideas = []
@@ -570,6 +577,24 @@ class Skills(Resource):
                 })
         cnxn.close()
         return list_of_skills, 200
+
+@api.route('/events')
+class Events(Resource):
+    @api.marshal_list_with(event_model)
+    def get(self):
+        list_of_events = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Event;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for skill in result:
+                list_of_events.append({
+                    'id' : event['SkillID'],
+                    'name' : event['Name'],
+                })
+        cnxn.close()
+        return list_of_events, 200
 
 
 @api.route('/users')

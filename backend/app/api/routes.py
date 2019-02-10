@@ -39,8 +39,7 @@ event_model = api.model('Event',
     {
         'id' : fields.Integer,
         'name' : fields.String,
-        'creator' : fields.Nested(user_model),
-        'admins' : fields.List(fields.Nested(user_model)),
+        'admin' : fields.Nested(user_model),
         'attendies' : fields.List(fields.Nested(user_model))
     }
 )
@@ -594,61 +593,40 @@ class Users(Resource):
 class Event(Resource):
     @api.marshal_with(event_model)
     def get(self, event_id):
-        return {
-            'id' : '1',
-            'name' : 'Hack Beanpot',
-            'creator' : {
-                            'id' : 0,
-                            'name' : 'The OG Git Booster',
-                            'email' : 'thatOGboost@boost.org',
-                            'major' : 'Boosting',
-                            'slack' : 'thatOGBooster',
-                        },
-            'admins' : [{
-                            'id' : 0,
-                            'name' : 'The OG Git Booster',
-                            'email' : 'thatOGboost@boost.org',
-                            'major' : 'Boosting',
-                            'slack' : 'thatOGBooster',
-                        }],
-            'attendies' : [{
-                            'id' : 0,
-                            'name' : 'The OG Git Booster',
-                            'email' : 'thatOGboost@boost.org',
-                            'major' : 'Boosting',
-                            'slack' : 'thatOGBooster',
-                        }]
-        }
+        sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID INNER JOIN JUser ON JUserEvent.JUserID = JUser.JUserID WHERE Event.EventID = %s"
+        cnxn = getConnection()
+        crsr = cnxn.cursor()
+        crsr.execute(sql, (event_id))
+        result = crsr.fetchall()
+        cnxn.close()
 
-@api.route('/events')
-class Events(Resource):
-    @api.marshal_list_with(event_model)
-    def get(self):
-        return [
-                {
-                'id' : '1',
-                'name' : 'Hack Beanpot',
-                'creator' : {
-                                'id' : 0,
-                                'name' : 'The OG Git Booster',
-                                'email' : 'thatOGboost@boost.org',
-                                'major' : 'Boosting',
-                                'slack' : 'thatOGBooster',
-                            },
-                'admins' : [{
-                                'id' : 0,
-                                'name' : 'The OG Git Booster',
-                                'email' : 'thatOGboost@boost.org',
-                                'major' : 'Boosting',
-                                'slack' : 'thatOGBooster',
-                            }],
-                'attendies' : [{
-                                'id' : 0,
-                                'name' : 'The OG Git Booster',
-                                'email' : 'thatOGboost@boost.org',
-                                'major' : 'Boosting',
-                                'slack' : 'thatOGBooster',
-                            }]
-            }
-        ]
+        list_of_attendies = []
+        for atendee in result:
+            list_of_attendies.append({
+                'id' : atendee['JUser.JUserID'],
+                'name' : atendee['Name'],
+                'email' : atendee['Email'],
+                'major' : 'Boosting',
+                'slack' : atendee['Slack'],
+            })
+
+        sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID WHERE Event.EventID = %s"
+        cnxn = getConnection()
+        crsr = cnxn.cursor()
+        crsr.execute(sql, (event_id))
+        result_admin = crsr.fetchone()
+        cnxn.close()
+
+        return {
+            'id' : result_admin['EventID'],
+            'name' : result_admin['EName'],
+            'admin' : {
+                            'id' : result_admin['AdminID'],
+                            'name' : result_admin['Name'],
+                            'email' : result_admin['Email'],
+                            'major' : 'Boosting',
+                            'slack' : result_admin['Slack'],
+                        },
+            'attendies' : list_of_attendies
+        }, 200
 

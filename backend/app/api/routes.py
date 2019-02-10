@@ -330,7 +330,7 @@ class Fill(Resource):
                             ('josephaoun64', 'Joseph Aoun', 'aoun.j@northeastern.edu', 'flatscreens4lyfe', FALSE),
                             ('pacodadog64', 'Paco DaDog', 'oofboof@woof.com', 'big_bad_dog', FALSE),
                             ('salvulcano64', 'Sal Vulcano', 'big_loser@impracticaljokers.com', 'tonights_loser', TRUE),
-                            ('tonabologna64', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE);""",
+                            ('tonybologna64', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE);""",
 
                             """INSERT INTO Major (Name)
                             VALUES ('Computer Engineering'),

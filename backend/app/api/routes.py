@@ -5,6 +5,11 @@ from app.api import bp
 from app.api import api
 import pymysql.cursors
 import requests
+import time
+import os 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
+UPLOAD_FOLDER = dir_path + '/user-uploads/'
 
 def getConnection():
     return pymysql.connect(
@@ -23,6 +28,8 @@ user_model = api.model('User',
         'email' : fields.String,
         'major' : fields.String,
         'slack' : fields.String,
+        'first_hack': fields.Boolean,
+        'image': fields.String
     }
 )
 
@@ -31,7 +38,9 @@ user_model_post = api.model('User',
         'name' : fields.String,
         'email' : fields.String,
         'major' : fields.String,
-        'slack' : fields.String
+        'slack' : fields.String,
+        'first_hack': fields.Boolean,
+        'image': fields.String
     }
 )
 
@@ -529,13 +538,20 @@ class Users(Resource):
             crsr.execute(sql)
             result = crsr.fetchall()
             for user in result:
+                # Get image data (it's in base64)
+                f = open(UPLOAD_FOLDER + user['Image'], "r")
+
                 list_of_users.append({
                     'id' : user['JUserID'],
                     'name' : user['Name'],
                     'email' : user['Email'],
                     'major' : user['major.Name'],
                     'slack' : user['Slack'],
+                    'first_hack': user['FirstHack'],
+                    'image' : f.read()
                 })
+
+                f.close()
         cnxn.close()
         return list_of_users, 200
     
@@ -543,13 +559,14 @@ class Users(Resource):
     def post(self):
         user = api.payload
         cnxn = getConnection()
+
         try:
             with cnxn.cursor() as crsr:
                 # Determine if the Major already Exists
                 crsr.execute("SELECT MajorID FROM Major WHERE Name = %s", (user['major']))
                 major = crsr.fetchone()
                 if major == None:
-                    crsr.execute("INSERT INTO jumble.Major (Name) VALUES (%s)", (user['name']))
+                    crsr.execute("INSERT INTO jumble.Major (Name) VALUES (%s)", (user['major']))
                 cnxn.commit()
             cnxn.close()
             
@@ -582,13 +599,21 @@ class Users(Resource):
             cnxn = getConnection()
             with cnxn.cursor() as crsr:
                 if 'image' in user:
-                    crsr.execute("UPDATE jumble.JUser SET Image = ...... WHERE JUser.Email = ?", (user['image'], user['email']))
+                    print("asserting that shit")
+                    file_name = str(int(time.time()*10**7))
+                    f = open(UPLOAD_FOLDER + file_name, "w+")
+                    f.write(user['image'])
+                    f.close()
+
+                    crsr.execute("UPDATE jumble.JUser SET Image = %s WHERE JUser.Email = %s", (file_name, user['email']))
                     cnxn.commit()
             cnxn.close()
 
-            return {'successfully insert user into jumble' : 200}
-        except:
-            return {'unable to insert user into jumble' : 500}
+            return {'successfully insert user into jumble': 200}
+        except Exception as e:
+            import traceback
+            traceback.print_last()
+            return {'unable to insert user into jumble ' + str(e): 500}
 
 @api.route('/event/<event_id>')
 class Event(Resource):

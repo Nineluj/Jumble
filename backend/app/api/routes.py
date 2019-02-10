@@ -10,7 +10,7 @@ def getConnection():
     return pymysql.connect(
             host='localhost',
             user='root',
-            password='tapley4656',
+            password='gitboost0208',
             db='jumble',
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
@@ -23,6 +23,12 @@ user_model = api.model('User',
         'email' : fields.String,
         'major' : fields.String,
         'slack' : fields.String,
+    }
+)
+
+user_id_model = api.model('User',
+    {
+        'id': fields.Integer
     }
 )
 
@@ -710,3 +716,17 @@ class Event(Resource):
             'attendies' : list_of_attendies
         }, 200
 
+    # Add the a user to the given event.
+    @api.expect(user_id_model)
+    def post(self, event_id):
+        try:
+            user_id = api.payload['id']
+            sql = "INSERT INTO JUserEvent VALUES (" + str(user_id) + ", " + str(event_id) + ")"
+            cnxn = getConnection()
+            with cnxn.cursor() as crsr:
+                crsr.execute(sql)
+            cnxn.commit()
+            cnxn.close()
+            return {"Message": "We added user: " + str(user_id) + " to the event: " + str(event_id)}, 200
+        except:
+            return {"Message": "We COULD NOT add user: " + str(user_id) + " to the event: " + str(event_id)}, 500

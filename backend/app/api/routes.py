@@ -80,6 +80,13 @@ idea_model_post = api.model('Idea',
     }
 )
 
+skills_model_post = api.model('Skills', 
+    {
+        'skillID' : fields.Integer,
+        'name' : fields.String
+    }
+)
+
 major_model = api.model('Major', 
     {
         'id' : fields.Integer,
@@ -690,6 +697,24 @@ class Skills(Resource):
                     'name' : skill['Name'],
                 })
         cnxn.close()
+        return list_of_skills, 200
+
+@api.route('/skill/<user_id>')
+class GetUserSkills(Resource):
+    @api.marshal_with(skills_model_post)
+    def post(self, user_id):
+        list_of_skills = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT Skill.SkillID, Skill.Name from Skill INNER JOIN JUserSkill ON Skill.SkillID = JUserSkill.SkillID INNER JOIN JUser ON JUser.JUserID = JUserSkill.JUserID WHERE JUser.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchall()
+            cnxn.close()
+            for skill in result:
+                list_of_skills.append({
+                'skillID' : skill['SkillID'],
+                'name' : skill['Name'],
+            })
         return list_of_skills, 200
 
 # Get all events for all users

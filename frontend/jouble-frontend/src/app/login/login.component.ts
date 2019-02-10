@@ -16,12 +16,12 @@ export class LoginComponent implements OnInit {
 
   // Submits the user email and password.
   public submitLogin() {
-    $.ajax({
-      type: "POST",
-      url: "http://localhost:5000",
-      data: { username: $('#emailInput').val(), password: $('password').val() },
-      success: this.loginSuccessHandler
-    });
+    // $.ajax({
+    //   type: "POST",
+    //   url: "http://localhost:5000",
+    //   data: { username: $('#emailInput').val(), password: $('password').val() },
+    //   success: this.loginSuccessHandler
+    // });
   }
 
   private loginSuccessHandler() {

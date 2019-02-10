@@ -12,7 +12,7 @@ import { Injectable } from '@angular/core';
 export class CurrentCardDataService {
 
   private firstName: string;
-  private lastName: string; 
+  private lastName: string;
   private email: string;
   private major; string;
   private slack: string;
@@ -21,12 +21,12 @@ export class CurrentCardDataService {
   private skills: string;
   private picture: HTMLImageElement;
 
-  constructor() { 
+  constructor() {
     // For testing only.
-    this.firstName = "Test Name 1";
-    this.email = "boost@dorial.com";
-    this.major = "Psychology";
-    this.slack = "mkach_slack";
+    this.firstName = 'Test Name 1';
+    this.email = 'boost@dorial.com';
+    this.major = 'Psychology';
+    this.slack = 'mkach_slack';
   }
 
   getFirstName(): string {

@@ -27,10 +27,10 @@
 
         <div class="row" style="padding-top: 20px; text-align: center;">
           <div class="col-sm-6" style="padding-top: 20px;">
-            <img style="height: 60px; cursor: pointer" src="../../assets/x-circle.svg">
+            <img style="height: 60px; cursor: pointer" (click)="updateCard(false)" src="../../assets/x-circle.svg">
           </div>
           <div class="col-sm-6" style="padding-top: 20px;">
-              <img style="height: 60px; cursor: pointer" src="../../assets/check-circle.svg">
+              <img style="height: 60px; cursor: pointer" (click)="updateCard(true)" src="../../assets/check-circle.svg">
             </div>
         </div>
     </div>

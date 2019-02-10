@@ -353,7 +353,7 @@ class Fill(Resource):
                             ('pacodadog64', 'Paco DaDog', 'oofboof@woof.com', 'big_bad_dog', FALSE),
                             ('salvulcano64', 'Sal Vulcano', 'big_loser@impracticaljokers.com', 'tonights_loser', TRUE),
                             ('tonybologna64', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE),
-                            ('testuser', 'test user', 'test@test.com', 'test, TRUE);""",
+                            ('testuser', 'test user', 'test@test.com', 'test', TRUE);""",
 
                             """INSERT INTO Major (Name)
                             VALUES ('Computer Engineering'),
@@ -750,6 +750,7 @@ class Users(Resource):
             import traceback
             traceback.print_last()
             return {'unable to insert user into jumble ' + str(e): 500}
+
 # Gets the next image for the current user.
 @api.route('/next<user_id>')
 class Next(Resource):

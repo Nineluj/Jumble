@@ -41,7 +41,7 @@ user_model_post = api.model('User',
     }
 )
 
-event_model = api.model('Event', 
+event_model_list = api.model('Event', 
     {
         'id' : fields.Integer,
         'name' : fields.String,
@@ -602,6 +602,32 @@ class Events(Resource):
         cnxn.close()
         return list_of_events, 200
 
+@api.route('/events/<user_id>')
+class GetUserEvents(Resource):
+
+    # Returns the events a given user is registered for.
+    @api.marshal_list_with(event_model)
+    def get(self, user_id):
+        try:
+            list_of_events = []
+            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID WHERE JUserID = %s"
+            cnxn = getConnection()
+            with cnxn.cursor() as crsr:
+                crsr.execute(sql, (user_id))
+                result = crsr.fetchall()
+                for event in result:
+                    list_of_events.append(
+                        {
+                            'id' : event['EventID'],
+                            'name' : event['EName'],
+                        }
+                    )
+            cnxn.commit()
+            cnxn.close()
+            return list_of_events, 200
+        except:
+            return {'error' : 500}, 500
+
 
 @api.route('/users')
 class Users(Resource):
@@ -677,44 +703,47 @@ class Users(Resource):
 
 @api.route('/event/<event_id>')
 class Event(Resource):
-    @api.marshal_with(event_model)
+    @api.marshal_with(event_model_list)
     def get(self, event_id):
-        sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID INNER JOIN JUser ON JUserEvent.JUserID = JUser.JUserID WHERE Event.EventID = %s"
-        cnxn = getConnection()
-        crsr = cnxn.cursor()
-        crsr.execute(sql, (event_id))
-        result = crsr.fetchall()
-        cnxn.close()
+        try:
+            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID INNER JOIN JUser ON JUserEvent.JUserID = JUser.JUserID WHERE Event.EventID = %s"
+            cnxn = getConnection()
+            crsr = cnxn.cursor()
+            crsr.execute(sql, (event_id))
+            result = crsr.fetchall()
+            cnxn.close()
 
-        list_of_attendies = []
-        for atendee in result:
-            list_of_attendies.append({
-                'id' : atendee['JUser.JUserID'],
-                'name' : atendee['Name'],
-                'email' : atendee['Email'],
-                'major' : 'Boosting',
-                'slack' : atendee['Slack'],
-            })
+            list_of_attendies = []
+            for atendee in result:
+                list_of_attendies.append({
+                    'id' : atendee['JUser.JUserID'],
+                    'name' : atendee['Name'],
+                    'email' : atendee['Email'],
+                    'major' : 'Boosting',
+                    'slack' : atendee['Slack'],
+                })
 
-        sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID WHERE Event.EventID = %s"
-        cnxn = getConnection()
-        crsr = cnxn.cursor()
-        crsr.execute(sql, (event_id))
-        result_admin = crsr.fetchone()
-        cnxn.close()
+            sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID WHERE Event.EventID = %s"
+            cnxn = getConnection()
+            crsr = cnxn.cursor()
+            crsr.execute(sql, (event_id))
+            result_admin = crsr.fetchone()
+            cnxn.close()
 
-        return {
-            'id' : result_admin['EventID'],
-            'name' : result_admin['EName'],
-            'admin' : {
-                            'id' : result_admin['AdminID'],
-                            'name' : result_admin['Name'],
-                            'email' : result_admin['Email'],
-                            'major' : 'Boosting',
-                            'slack' : result_admin['Slack'],
-                        },
-            'attendies' : list_of_attendies
-        }, 200
+            return {
+                'id' : result_admin['EventID'],
+                'name' : result_admin['EName'],
+                'admin' : {
+                                'id' : result_admin['AdminID'],
+                                'name' : result_admin['Name'],
+                                'email' : result_admin['Email'],
+                                'major' : 'Boosting',
+                                'slack' : result_admin['Slack'],
+                            },
+                'attendies' : list_of_attendies
+            }, 200
+        except:
+            return {"error": 500}, 500
 
     # Add the a user to the given event.
     @api.expect(user_id_model)

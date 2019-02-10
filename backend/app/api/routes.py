@@ -73,6 +73,13 @@ interest_model_post = api.model('Interest',
     }
 )
 
+idea_model_post = api.model('Idea', 
+    {
+        'ideaID' : fields.Integer,
+        'name' : fields.String
+    }
+)
+
 major_model = api.model('Major', 
     {
         'id' : fields.Integer,
@@ -644,6 +651,24 @@ class Ideas(Resource):
                     'name' : idea['Name'],
                 })
         cnxn.close()
+        return list_of_ideas, 200
+
+@api.route('/ideas/<user_id>')
+class GetUserIdeas(Resource):
+    @api.marshal_with(idea_model_post)
+    def post(self, user_id):
+        list_of_ideas = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT Idea.IdeaID, Idea.Name from Idea INNER JOIN JUserIdeas ON Idea.IdeaID = JUserIdeas.IdeaID INNER JOIN JUser ON JUser.JUserID = JUserIdeas.JUserID WHERE JUser.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchall()
+            cnxn.close()
+            for idea in result:
+                list_of_ideas.append({
+                'ideaID' : idea['IdeaID'],
+                'name' : idea['Name'],
+            })
         return list_of_ideas, 200
 
 # Get all skills for all users

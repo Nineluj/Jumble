@@ -801,7 +801,7 @@ class Event(Resource):
     @api.marshal_with(event_model_list)
     def get(self, event_id):
         try:
-            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID INNER JOIN JUser ON JUserEvent.JUserID = JUser.JUserID WHERE Event.EventID = %s"
+            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID INNER JOIN JUser ON JUserEvent.JUserID = JUser.JUserID INNER JOIN MajorJUser ON MajorJUser.JUserID = JUserEvent.JUserID INNER JOIN Major ON Major.MajorID = MajorJUser.MajorID WHERE Event.EventID = %s"
             cnxn = getConnection()
             crsr = cnxn.cursor()
             crsr.execute(sql, (event_id))
@@ -814,11 +814,11 @@ class Event(Resource):
                     'id' : atendee['JUser.JUserID'],
                     'name' : atendee['Name'],
                     'email' : atendee['Email'],
-                    'major' : 'Boosting',
+                    'major' : atendee['Major'],
                     'slack' : atendee['Slack'],
                 })
 
-            sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID WHERE Event.EventID = %s"
+            sql = "SELECT * FROM Event INNER JOIN JUser ON JUser.JUserID = Event.AdminID JOIN MajorJUser ON MajorJUser.JUserID = JUser.JUserID INNER JOIN Major ON Major.MajorID = MajorJUser.MajorID WHERE Event.EventID = %s"
             cnxn = getConnection()
             crsr = cnxn.cursor()
             crsr.execute(sql, (event_id))
@@ -832,7 +832,7 @@ class Event(Resource):
                                 'id' : result_admin['AdminID'],
                                 'name' : result_admin['Name'],
                                 'email' : result_admin['Email'],
-                                'major' : 'Boosting',
+                                'major' : result_admin['Major'],
                                 'slack' : result_admin['Slack'],
                             },
                 'attendies' : list_of_attendies

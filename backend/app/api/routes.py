@@ -4,6 +4,7 @@ import marshmallow
 from app.api import bp
 from app.api import api
 import pymysql.cursors
+import requests
 
 def getConnection():
     return pymysql.connect(
@@ -104,10 +105,11 @@ class Wipe(Resource):
                 """
                 CREATE TABLE IF NOT EXISTS JUser (
                 JUserID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
-                Image blob,
+                Image text,
                 Name text,
                 Email text,
-                Slack text);
+                Slack text,
+                FirstHack BOOLEAN);
                 """,
                 """
                 CREATE TABLE IF NOT EXISTS MajorJUser (
@@ -123,6 +125,17 @@ class Wipe(Resource):
                 CREATE TABLE IF NOT EXISTS Interest (
                 InterestID int AUTO_INCREMENT NOT NULL PRIMARY KEY,
                 Name text);
+                """,
+                """
+                CREATE TABLE IF NOT EXISTS UserLikes (
+	            UserMainID int,
+                UserLikedID int,
+                FOREIGN KEY userlikes_usermain_fk(UserMainID)
+                REFERENCES JUser(JUserID),
+                FOREIGN KEY userlikes_userliked_fk(UserLikedID)
+                REFERENCES JUser(JUserID),
+                PRIMARY KEY (UserMainID, UserLikedID)
+                );
                 """,
                 """
                 CREATE TABLE IF NOT EXISTS Idea (
@@ -166,12 +179,14 @@ class Wipe(Resource):
                 """,
                 """
                 CREATE TABLE IF NOT EXISTS Contact (
-                PrimaryJUserID int PRIMARY KEY,
+                PrimaryJUserID int,
                 ContactID int,
                 FOREIGN KEY contact_primary_fk(PrimaryJUserID)
                 REFERENCES JUser(JUserID),
                 FOREIGN KEY contact_contact_fk(ContactID)
-                REFERENCES JUser(JUserID));
+                REFERENCES JUser(JUserID),
+                PRIMARY KEY (PrimaryJUserID, ContactID)
+                );
                 """,
                 """
                 CREATE TABLE IF NOT EXISTS Event (
@@ -216,7 +231,7 @@ class Wipe(Resource):
                 CREATE TABLE IF NOT EXISTS Auth (
                 JUserID int,
                 JUsername text,
-                Password blob,
+                JPassword blob,
                 FOREIGN KEY auth_juser_fk(JUserID)
                 REFERENCES JUser(JUserID));
                 """,
@@ -242,7 +257,6 @@ class Wipe(Resource):
                 FOREIGN KEY companyopenings_opening_fk(OpeningID)
                 REFERENCES Opening(OpeningID));
                 """]
-                cnxn = getConnection()
                 for statement in sql:
                     with cnxn.cursor() as crsr:
                         crsr.execute(statement)
@@ -252,6 +266,210 @@ class Wipe(Resource):
         except:
             return {'error': 500}, 500
         
+@api.route('/fill')
+class Fill(Resource):
+    def get(self):
+        r = requests.get('http://localhost:5000/api/wipe')
+        if r.status_code == 200:
+            cnxn = getConnection()
+            try:
+                with cnxn.cursor() as crsr:
+                    sql = ["""USE jumble;""",
+
+                            """INSERT INTO JUser (Image, Name, Email, Slack, FirstHack)
+                            VALUES ('BB.jpg', 'Barry B. Benson', 'bb123@beehive.com', 'barry_bee', FALSE),
+                            ('ChadBradley.jpg', 'Chad Bradley', 'totally@bro.com', 'lit_gainz', TRUE),
+                            ('ChickenLou.jpg', 'Chicken Louis', 'dave@chickenlous.net', 'crispy-luscious_deluxe', FALSE),
+                            ('DorialBeckham.jpg', 'Dorial Green-Beckham', 'nfllegends@retired.com', 'oops-I-did-it-again', TRUE),
+                            ('JosephAoun.jpg', 'Joseph Aoun', 'aoun.j@northeastern.edu', 'flatscreens4lyfe', FALSE),
+                            ('PacoDadog.jpg', 'Paco DaDog', 'oofboof@woof.com', 'big_bad_dog', FALSE),
+                            ('SalVulcano.jpg', 'Sal Vulcano', 'big_loser@impracticaljokers.com', 'tonights_loser', TRUE),
+                            ('TonyBologna.jpg', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE);""",
+
+                            """INSERT INTO Major (Name)
+                            VALUES ('Computer Engineering'),
+                            ('Computer Science'),
+                            ('Information Science'),
+                            ('Data Science'),
+                            ('Finance');""",
+
+                            """INSERT INTO MajorJUser (MajorID, JUserID)
+                            VALUES (1, 1), (2, 2), (2, 3), (4, 4), (2, 5), (1, 6), (3, 7), (5, 8);""",
+
+                            """INSERT INTO Interest (Name)
+                            VALUES ('Green Engineering'),
+                            ('Animals'),
+                            ('Music'),
+                            ('Sports'),
+                            ('Partying'),
+                            ('Game Design'),
+                            ('Food'),
+                            ('Robotics'),
+                            ('Entertainment'),
+                            ('Education'),
+                            ('Machine Learning'),
+                            ('Artificial Intelligence'),
+                            ('Web Development'),
+                            ('Back-End Development');""",
+
+                            """INSERT INTO UserLikes (UserMainID, UserLikedID)
+                            VALUES (1, 6),
+                            (1, 8),
+                            (2, 4),
+                            (2, 8),
+                            (3, 6),
+                            (4, 2),
+                            (4, 5),
+                            (5, 1),
+                            (5, 3),
+                            (6, 1),
+                            (6, 8),
+                            (7, 1),
+                            (7, 5),
+                            (8, 3),
+                            (8, 6);""",
+        
+                            """INSERT INTO Idea (Name)
+                            VALUES ('Green Engineering'),
+                            ('Animals'),
+                            ('Music'),
+                            ('Sports'),
+                            ('Partying'),
+                            ('Game Design'),
+                            ('Food'),
+                            ('Robotics'),
+                            ('Entertainment'),
+                            ('Education'),
+                            ('Machine Learning'),
+                            ('Artificial Intelligence'),
+                            ('Web Development'),
+                            ('Back-End Development');""",
+        
+                            """INSERT INTO Skill (Name)
+                            VALUES ('Python'),
+                            ('Java'),
+                            ('Node.js'),
+                            ('Angular.js'),
+                            ('SQL'),
+                            ('Tensorflow'),
+                            ('C++'),
+                            ('Arduino'),
+                            ('HTML'),
+                            ('Microsoft Word'),
+                            ('Microsoft Powerpoint');""",
+                            
+                            """INSERT INTO JUserInterests (JUserID, InterestID)
+                            VALUES (1, 1),
+                            (1,2),
+                            (1,3),
+                            (2,3),
+                            (2,4),
+                            (2,5),
+                            (2,6),
+                            (3,7),
+                            (3,8),
+                            (4,4),
+                            (4,5),
+                            (5,9),
+                            (5,10),
+                            (6,7),
+                            (6,2),
+                            (7,13),
+                            (7,9),
+                            (8,12),
+                            (8,11),
+                            (8,8);""",
+        
+                            """INSERT INTO JUserIdeas (JUserID, IdeaID)
+                            VALUES (1,1),
+                            (1,8),
+                            (3,2),
+                            (3, 12),
+                            (4, 4),
+                            (4, 5),
+                            (5, 1),
+                            (5, 2),
+                            (5,3),
+                            (5,4),
+                            (5,5),
+                            (5,6),
+                            (5,7),
+                            (5,8),
+                            (5,9),
+                            (5,10),
+                            (6,4),
+                            (6,2),
+                            (7, 13),
+                            (7,12),
+                            (8,11),
+                            (8,12),
+                            (8,4);""",
+        
+                            """INSERT INTO JUserSkill (JUserID, SKillID)
+                            VALUES (1,1),
+                            (1,8),
+                            (2,10),
+                            (2,11),
+                            (4,7),
+                            (4,5),
+                            (5,1),
+                            (5,2),
+                            (5,3),
+                            (5,4),
+                            (5,6),
+                            (5,7),
+                            (5,8),
+                            (5,9),
+                            (6,9),
+                            (6,4),
+                            (7,3),
+                            (7,4),
+                            (8,1),
+                            (8,2),
+                            (8,7);""",
+        
+                            """INSERT INTO Contact (PrimaryJUserID, ContactID)
+                            VALUES (1,6),
+                            (2,4),
+                            (4,2),
+                            (6,1),
+                            (6,8),
+                            (8,6);""",
+        
+                            """INSERT INTO Event (AdminID, EName)
+                            VALUES (8, 'HackBeanpot'),
+                            (2, 'Fratathon');""",
+        
+                            """INSERT INTO JUserEvent (EventID, JUserID)
+                            VALUES (2, 4),
+                            (2, 5),
+                            (1,1),
+                            (1,3),
+                            (1,4),
+                            (1,5),
+                            (1,6),
+                            (1,7);""",
+        
+                            """INSERT INTO Auth (JUserID, JUsername, JPassword)
+                            VALUES (1, 'barryb', 1),
+                            (2, 'chadb', 2),
+                            (3, 'louisc', 3),
+                            (4, 'dorialgoat', 4),
+                            (5, 'flatscreen', 5),
+                            (6, 'oofboof', 6),
+                            (7, 'loser', 7),
+                            (8, 'magianos', 8);"""]
+                for statement in sql:
+                    with cnxn.cursor() as crsr:
+                        crsr.execute(statement)
+                cnxn.commit()
+                cnxn.close()
+                return {'message' : 'Successfully filled database.'}
+            except:
+                return {'error': 500}, 500
+
+
+            
 
 @api.route('/user/<user_id>')
 class User(Resource):

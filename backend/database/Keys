@@ -1,0 +1,63 @@
+PRIMARY KEY IDS:
+
+JUser:
+1 Barry B. Benson
+2 Chad Bradley
+3 Chicken Louis
+4 Dorial Green-Beckham
+5 Joseph Aoun
+6 Paco Dadog
+7 Sal Vulcano
+8 Tony Bologna
+
+Major:
+1 CE
+2 CS
+3 IS
+4 DS
+5 Finance
+
+Interest:
+1 Green Engineering
+2 Animals
+3 Music
+4 Sports
+5 Partying
+6 Game Design
+7 Food
+8 Robotics
+9 Entertainment
+10 Education
+11 ML
+12 AI
+13 Web Dev
+
+Idea:
+1 Green Engineering
+2 Animals
+3 Music
+4 Sports
+5 Partying
+6 Game Design
+7 Food
+8 Robotics
+9 Entertainment
+10 Education
+11 ML
+12 AI
+13 Web Dev
+
+Skill:
+1 Python
+2 Java
+3 Node.js
+4 Angular.js
+5 SQL
+6 Tensorflow
+7 C++
+8 Arduino
+9 HTML
+10 Word
+11 PP
+
+

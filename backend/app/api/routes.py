@@ -15,7 +15,7 @@ def getConnection():
     return pymysql.connect(
             host='localhost',
             user='root',
-            password='gitboost0208',
+            password='tapley4656',
             db='jumble',
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
@@ -133,6 +133,13 @@ contacts_model = api.model('Contacts',
     {
         'self' : fields.Integer,
         'contacts' : fields.List(fields.Nested(user_model))
+    }
+)
+
+record_like_model = api.model('UserLikes',
+    {
+        'user_main': fields.Integer,
+        'user_liked': fields.Integer
     }
 )
 
@@ -642,182 +649,6 @@ class Contacts(Resource):
             return payload, 200
         return {'message' : 'server error'}, 500
 
-# Get all interests for all users
-@api.route('/interests')
-class Interests(Resource):
-    @api.marshal_list_with(interest_model)
-    def get(self):
-        list_of_interests = []
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT * FROM Interest;"
-            crsr.execute(sql)
-            result = crsr.fetchall()
-            for interest in result:
-                list_of_interests.append({
-                    'id' : interest['InterestID'],
-                    'name' : interest['Name'],
-                })
-        cnxn.close()
-        return list_of_interests, 200
-
-@api.route('/interest/<user_id>')
-class GetUserInterest(Resource):
-    @api.marshal_with(interest_model_post)
-    def post(self, user_id):
-        list_of_interests = []
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT Interest.InterestID, Interest.Name from Interest INNER JOIN JUserInterests ON Interest.InterestID = JUserInterests.InterestID INNER JOIN JUser ON JUser.JUserID = JUserInterests.JUserID WHERE JUser.JUserID = %s"
-            crsr.execute(sql, (user_id,))
-            result = crsr.fetchall()
-            cnxn.close()
-            for interest in result:
-                list_of_interests.append({
-                'interestID' : interest['InterestID'],
-                'name' : interest['Name'],
-            })
-        return list_of_interests, 200
-
-
-# Get all majors for all users
-@api.route('/majors')
-class Major(Resource):
-    @api.marshal_list_with(major_model)
-    def get(self):
-        list_of_majors = []
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT * FROM Major;"
-            crsr.execute(sql)
-            result = crsr.fetchall()
-            for major in result:
-                list_of_majors.append({
-                    'id' : major['MajorID'],
-                    'name' : major['Name'],
-                })
-        cnxn.close()
-        return list_of_majors, 200
-
-# Gets all ideas for all users
-@api.route('/ideas')
-class Ideas(Resource):
-    @api.marshal_list_with(idea_model)
-    def get(self):
-        list_of_ideas = []
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT * FROM Idea;"
-            crsr.execute(sql)
-            result = crsr.fetchall()
-            for idea in result:
-                list_of_ideas.append({
-                    'id' : idea['IdeaID'],
-                    'name' : idea['Name'],
-                })
-        cnxn.close()
-        return list_of_ideas, 200
-
-@api.route('/ideas/<user_id>')
-class GetUserIdeas(Resource):
-    @api.marshal_with(idea_model_post)
-    def post(self, user_id):
-        list_of_ideas = []
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT Idea.IdeaID, Idea.Name from Idea INNER JOIN JUserIdeas ON Idea.IdeaID = JUserIdeas.IdeaID INNER JOIN JUser ON JUser.JUserID = JUserIdeas.JUserID WHERE JUser.JUserID = %s"
-            crsr.execute(sql, (user_id,))
-            result = crsr.fetchall()
-            cnxn.close()
-            for idea in result:
-                list_of_ideas.append({
-                'ideaID' : idea['IdeaID'],
-                'name' : idea['Name'],
-            })
-        return list_of_ideas, 200
-
-# Get all skills for all users
-@api.route('/skills')
-class Skills(Resource):
-    @api.marshal_list_with(skill_model)
-    def get(self):
-        list_of_skills = []
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT * FROM Skill;"
-            crsr.execute(sql)
-            result = crsr.fetchall()
-            for skill in result:
-                list_of_skills.append({
-                    'id' : skill['SkillID'],
-                    'name' : skill['Name'],
-                })
-        cnxn.close()
-        return list_of_skills, 200
-
-@api.route('/skill/<user_id>')
-class GetUserSkills(Resource):
-    @api.marshal_with(skills_model_post)
-    def post(self, user_id):
-        list_of_skills = []
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT Skill.SkillID, Skill.Name from Skill INNER JOIN JUserSkill ON Skill.SkillID = JUserSkill.SkillID INNER JOIN JUser ON JUser.JUserID = JUserSkill.JUserID WHERE JUser.JUserID = %s"
-            crsr.execute(sql, (user_id,))
-            result = crsr.fetchall()
-            cnxn.close()
-            for skill in result:
-                list_of_skills.append({
-                'skillID' : skill['SkillID'],
-                'name' : skill['Name'],
-                })
-        return list_of_skills, 200
-
-# Get all events for all users
-@api.route('/events')
-class Events(Resource):
-    @api.marshal_list_with(event_model)
-    def get(self):
-        list_of_events = []
-        cnxn = getConnection()
-        with cnxn.cursor() as crsr:
-            sql = "SELECT * FROM Event;"
-            crsr.execute(sql)
-            result = crsr.fetchall()
-            for event in result:
-                list_of_events.append({
-                    'id' : event['EventID'],
-                    'name' : event['EName'],
-                })
-        cnxn.close()
-        return list_of_events, 200
-
-@api.route('/events/<user_id>')
-class GetUserEvents(Resource):
-
-    # Returns the events a given user is registered for.
-    @api.marshal_list_with(event_model)
-    def get(self, user_id):
-        try:
-            list_of_events = []
-            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID WHERE JUserID = %s"
-            cnxn = getConnection()
-            with cnxn.cursor() as crsr:
-                crsr.execute(sql, (user_id))
-                result = crsr.fetchall()
-                for event in result:
-                    list_of_events.append(
-                        {
-                            'id' : event['EventID'],
-                            'name' : event['EName'],
-                        }
-                    )
-            cnxn.commit()
-            cnxn.close()
-            return list_of_events, 200
-        except:
-            return {'error' : 500}, 500
-
 
 @api.route('/users')
 class Users(Resource):
@@ -906,6 +737,223 @@ class Users(Resource):
             import traceback
             traceback.print_last()
             return {'unable to insert user into jumble ' + str(e): 500}
+
+# Get all interests for all users
+@api.route('/interests')
+class Interests(Resource):
+    @api.marshal_list_with(interest_model)
+    def get(self):
+        list_of_interests = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Interest;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for interest in result:
+                list_of_interests.append({
+                    'id' : interest['InterestID'],
+                    'name' : interest['Name'],
+                })
+        cnxn.close()
+        return list_of_interests, 200
+
+@api.route('/interest/<user_id>')
+class GetUserInterest(Resource):
+    @api.marshal_with(interest_model_post)
+    @api.expect(user_id_model)
+    def post(self, user_id):
+        list_of_interests = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT Interest.InterestID, Interest.Name from Interest INNER JOIN JUserInterests ON Interest.InterestID = JUserInterests.InterestID INNER JOIN JUser ON JUser.JUserID = JUserInterests.JUserID WHERE JUser.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchall()
+            cnxn.close()
+            for interest in result:
+                list_of_interests.append({
+                'interestID' : interest['InterestID'],
+                'name' : interest['Name'],
+            })
+        return list_of_interests, 200
+
+
+# Get all majors for all users
+@api.route('/majors')
+class Major(Resource):
+    @api.marshal_list_with(major_model)
+    def get(self):
+        list_of_majors = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Major;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for major in result:
+                list_of_majors.append({
+                    'id' : major['MajorID'],
+                    'name' : major['Name'],
+                })
+        cnxn.close()
+        return list_of_majors, 200
+
+# Gets all ideas for all users
+@api.route('/ideas')
+class Ideas(Resource):
+    @api.marshal_list_with(idea_model)
+    def get(self):
+        list_of_ideas = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Idea;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for idea in result:
+                list_of_ideas.append({
+                    'id' : idea['IdeaID'],
+                    'name' : idea['Name'],
+                })
+        cnxn.close()
+        return list_of_ideas, 200
+
+@api.route('/ideas/<user_id>')
+class GetUserIdeas(Resource):
+    @api.marshal_with(idea_model_post)
+    @api.expect(user_id_model)
+    def post(self, user_id):
+        list_of_ideas = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT Idea.IdeaID, Idea.Name from Idea INNER JOIN JUserIdeas ON Idea.IdeaID = JUserIdeas.IdeaID INNER JOIN JUser ON JUser.JUserID = JUserIdeas.JUserID WHERE JUser.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchall()
+            cnxn.close()
+            for idea in result:
+                list_of_ideas.append({
+                'ideaID' : idea['IdeaID'],
+                'name' : idea['Name'],
+            })
+        return list_of_ideas, 200
+
+# Get all skills for all users
+@api.route('/skills')
+class Skills(Resource):
+    @api.marshal_list_with(skill_model)
+    def get(self):
+        list_of_skills = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Skill;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for skill in result:
+                list_of_skills.append({
+                    'id' : skill['SkillID'],
+                    'name' : skill['Name'],
+                })
+        cnxn.close()
+        return list_of_skills, 200
+
+@api.route('/skill/<user_id>')
+class GetUserSkills(Resource):
+    @api.marshal_with(skills_model_post)
+    @api.expect(user_id_model)
+    def post(self, user_id):
+        list_of_skills = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT Skill.SkillID, Skill.Name from Skill INNER JOIN JUserSkill ON Skill.SkillID = JUserSkill.SkillID INNER JOIN JUser ON JUser.JUserID = JUserSkill.JUserID WHERE JUser.JUserID = %s"
+            crsr.execute(sql, (user_id,))
+            result = crsr.fetchall()
+            cnxn.close()
+            for skill in result:
+                list_of_skills.append({
+                'skillID' : skill['SkillID'],
+                'name' : skill['Name'],
+                })
+        return list_of_skills, 200
+
+@api.route('/likes')
+class RecordLike(Resource):
+    @api.expect(record_like_model)
+    def post(self):
+        user_main = api.payload['user_main']
+        user_liked = api.payload['user_liked']
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            test_sql = "SELECT length(UserMainID) as len FROM UserDislikes WHERE UserMainID = %s AND UserDislikedID = %s"
+            crsr.execute(test_sql, (user_main, user_liked))
+            result = crsr.fetchone()
+            if result['len'] > 0:
+                return {'error': 409}, 409
+            sql = "INSERT INTO UserLikes VALUES (%s, %s);"
+            crsr.execute(sql, (user_main, user_liked))
+            cnxn.commit()
+            cnxn.close()
+        return {'success': 200}, 200
+
+@api.route('/dislikes')
+class RecordDislike(Resource):
+    @api.expect(record_like_model)
+    def post(self):
+        user_main = api.payload['user_main']
+        user_liked = api.payload['user_liked']
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            test_sql = "SELECT length(UserMainID) as len FROM UserLikes WHERE UserMainID = %s AND UserLikedID = %s"
+            crsr.execute(test_sql, (user_main, user_liked))
+            result = crsr.fetchone()
+            if result['len'] > 0:
+                return {'error': 409}, 409
+            sql = "INSERT INTO UserDislikes VALUES (%s, %s);"
+            crsr.execute(sql, (user_main, user_liked))
+            cnxn.commit()
+            cnxn.close()
+        return {'success': 200}, 200
+
+# Get all events for all users
+@api.route('/events')
+class Events(Resource):
+    @api.marshal_list_with(event_model)
+    def get(self):
+        list_of_events = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Event;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for event in result:
+                list_of_events.append({
+                    'id' : event['EventID'],
+                    'name' : event['EName'],
+                })
+        cnxn.close()
+        return list_of_events, 200
+
+@api.route('/events/<user_id>')
+class GetUserEvents(Resource):
+
+    # Returns the events a given user is registered for.
+    @api.marshal_list_with(event_model)
+    def get(self, user_id):
+        try:
+            list_of_events = []
+            sql = "SELECT * FROM Event INNER JOIN JUserEvent ON Event.EventID = JUserEvent.EventID WHERE JUserID = %s"
+            cnxn = getConnection()
+            with cnxn.cursor() as crsr:
+                crsr.execute(sql, (user_id))
+                result = crsr.fetchall()
+                for event in result:
+                    list_of_events.append(
+                        {
+                            'id' : event['EventID'],
+                            'name' : event['EName'],
+                        }
+                    )
+            cnxn.commit()
+            cnxn.close()
+            return list_of_events, 200
+        except:
+            return {'error' : 500}, 500
 
 @api.route('/event/<event_id>')
 class Event(Resource):

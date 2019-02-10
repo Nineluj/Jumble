@@ -10,7 +10,7 @@ def getConnection():
     return pymysql.connect(
             host='localhost',
             user='root',
-            password='gitboost0208',
+            password='tapley4656',
             db='jumble',
             charset='utf8mb4',
             cursorclass=pymysql.cursors.DictCursor
@@ -52,7 +52,14 @@ interest_model = api.model('Interest',
     }
 )
 
-skills_model = api.model('Skill',
+idea_model = api.model('Idea', 
+    {
+        'id' : fields.Integer,
+        'name' : fields.String
+    }
+)
+
+skill_model = api.model('Skill',
     {
         'id' : fields.Integer,
         'name' : fields.String
@@ -63,13 +70,6 @@ interests_model = api.model('Interests',
     {
         'user' : fields.Nested(user_model),
         'interests' : fields.List(fields.Nested(interest_model))
-    }
-)
-
-skills_model = api.model('Skills', 
-    {
-        'user' : fields.Nested(user_model),
-        'skills' : fields.List(fields.Nested(skills_model))
     }
 )
 
@@ -517,6 +517,61 @@ class User(Resource):
                 'slack' : result['Slack'],
             }, 200
         return {'error' : 500}, 500
+
+@api.route('/interests')
+class Skills(Resource):
+    @api.marshal_list_with(interest_model)
+    def get(self):
+        list_of_interests = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Interest;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for interest in result:
+                list_of_interests.append({
+                    'id' : interest['InterestID'],
+                    'name' : interest['Name'],
+                })
+        cnxn.close()
+        return list_of_interests, 200
+
+@api.route('/ideas')
+class Skills(Resource):
+    @api.marshal_list_with(idea_model)
+    def get(self):
+        list_of_ideas = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Idea;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for idea in result:
+                list_of_ideas.append({
+                    'id' : idea['IdeaID'],
+                    'name' : idea['Name'],
+                })
+        cnxn.close()
+        return list_of_ideas, 200
+
+@api.route('/skills')
+class Skills(Resource):
+    @api.marshal_list_with(skill_model)
+    def get(self):
+        list_of_skills = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM Skill;"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for skill in result:
+                list_of_skills.append({
+                    'id' : skill['SkillID'],
+                    'name' : skill['Name'],
+                })
+        cnxn.close()
+        return list_of_skills, 200
+
 
 @api.route('/users')
 class Users(Resource):

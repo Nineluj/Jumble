@@ -752,7 +752,7 @@ class Users(Resource):
             return {'unable to insert user into jumble ' + str(e): 500}
 
 # Gets the next image for the current user.
-@api.route('/next<user_id>')
+@api.route('/next/<user_id>')
 class Next(Resource):
     @api.marshal_with(user_id_model)
     def get(self, user_id):
@@ -802,7 +802,6 @@ class Interests(Resource):
 @api.route('/interest/<user_id>')
 class GetUserInterest(Resource):
     @api.marshal_with(interest_model_post)
-    @api.expect(user_id_model)
     def post(self, user_id):
         list_of_interests = []
         cnxn = getConnection()
@@ -860,7 +859,6 @@ class Ideas(Resource):
 @api.route('/ideas/<user_id>')
 class GetUserIdeas(Resource):
     @api.marshal_with(idea_model_post)
-    @api.expect(user_id_model)
     def post(self, user_id):
         list_of_ideas = []
         cnxn = getConnection()
@@ -898,7 +896,6 @@ class Skills(Resource):
 @api.route('/skill/<user_id>')
 class GetUserSkills(Resource):
     @api.marshal_with(skills_model_post)
-    @api.expect(user_id_model)
     def post(self, user_id):
         list_of_skills = []
         cnxn = getConnection()

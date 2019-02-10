@@ -566,6 +566,38 @@ class User(Resource):
             }, 200
         return {'error' : 500}, 500
 
+@api.route('/contacts/<user_id>')
+class Contacts(Resource):
+    @api.marshal_list_with(user_id_model)
+    def get(self, user_id):
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = """
+            SELECT JUserID, Image, Name, Email, Slack, FirstHack FROM JUser INNER JOIN
+            (SELECT tbl1.alt AS users FROM
+            (SELECT UserLikedID as 'alt' FROM JUser INNER JOIN UserLikes 
+            ON JUser.JUserID = UserLikes.UserMainID
+            WHERE JUser.JUserID = %s) tbl1
+            INNER JOIN
+            (SELECT UserMainID as 'alt' FROM JUser INNER JOIN UserLikes 
+            ON JUser.JUserID = UserLikes.UserLikedID
+            WHERE JUser.JUserID = %s) tbl2 
+            ON tbl1.alt = tbl2.alt) tbl3 
+            ON JUser.JUserID = tbl3.users;
+            """
+            crsr.execute(sql, (str(user_id),str(user_id)))
+            result = crsr.fetchall()
+            cnxn.close()
+            payload = []
+            for user in result:
+                payload.append(
+                    {
+                        'id' : user['JUserID'],
+                    }
+                )
+            return payload, 200
+        return {'message' : 'server error'}, 500
+
 # Get all interests for all users
 @api.route('/interests')
 class Interests(Resource):

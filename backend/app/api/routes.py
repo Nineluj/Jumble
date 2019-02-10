@@ -352,7 +352,8 @@ class Fill(Resource):
                             ('josephaoun64', 'Joseph Aoun', 'aoun.j@northeastern.edu', 'flatscreens4lyfe', FALSE),
                             ('pacodadog64', 'Paco DaDog', 'oofboof@woof.com', 'big_bad_dog', FALSE),
                             ('salvulcano64', 'Sal Vulcano', 'big_loser@impracticaljokers.com', 'tonights_loser', TRUE),
-                            ('tonybologna64', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE);""",
+                            ('tonybologna64', 'Tony Bologna', 'tony@bologna.com', 'ya_like_jazz?', FALSE),
+                            ('testuser', 'test user', 'test@test.com', 'test, TRUE);""",
 
                             """INSERT INTO Major (Name)
                             VALUES ('Computer Engineering'),
@@ -362,7 +363,7 @@ class Fill(Resource):
                             ('Finance');""",
 
                             """INSERT INTO MajorJUser (MajorID, JUserID)
-                            VALUES (1, 1), (2, 2), (2, 3), (4, 4), (2, 5), (1, 6), (3, 7), (5, 8);""",
+                            VALUES (1, 1), (2, 2), (3, 3), (4, 4), (2, 5), (1, 6), (3, 7), (5, 8), (2,9);""",
 
                             """INSERT INTO Interest (Name)
                             VALUES ('Green Engineering'),
@@ -395,7 +396,13 @@ class Fill(Resource):
                             (7, 1),
                             (7, 5),
                             (8, 3),
-                            (8, 6);""",
+                            (8, 6),
+                            (1, 9),
+                            (3, 9),
+                            (4, 9),
+                            (5, 9),
+                            (6, 9),
+                            (8, 9);""",
 
                             """
                             INSERT INTO UserDislikes (UserMainID, UserDislikedID)
@@ -463,7 +470,8 @@ class Fill(Resource):
                             (7,9),
                             (8,12),
                             (8,11),
-                            (8,8);""",
+                            (8,8),
+                            (9, 1);""",
         
                             """INSERT INTO JUserIdeas (JUserID, IdeaID)
                             VALUES (1,1),
@@ -488,7 +496,8 @@ class Fill(Resource):
                             (7,12),
                             (8,11),
                             (8,12),
-                            (8,4);""",
+                            (8,4),
+                            (9,1);""",
         
                             """INSERT INTO JUserSkill (JUserID, SKillID)
                             VALUES (1,1),
@@ -511,7 +520,8 @@ class Fill(Resource):
                             (7,4),
                             (8,1),
                             (8,2),
-                            (8,7);""",
+                            (8,7),
+                            (9,1);""",
         
                             """INSERT INTO Contact (PrimaryJUserID, ContactID)
                             VALUES (1,6),
@@ -533,7 +543,8 @@ class Fill(Resource):
                             (1,4),
                             (1,5),
                             (1,6),
-                            (1,7);""",
+                            (1,7),
+                            (1,9);""",
         
                             """INSERT INTO Auth (JUserID, JUsername, JPassword)
                             VALUES (1, 'barryb', 1),
@@ -543,7 +554,8 @@ class Fill(Resource):
                             (5, 'flatscreen', 5),
                             (6, 'oofboof', 6),
                             (7, 'loser', 7),
-                            (8, 'magianos', 8);"""]
+                            (8, 'magianos', 8),
+                            (9, 'test', 9);"""]
                 for statement in sql:
                     with cnxn.cursor() as crsr:
                         crsr.execute(statement)

@@ -548,13 +548,14 @@ class User(Resource):
             crsr.execute(sql, (user_id,))
             result = crsr.fetchone()
             cnxn.close()
+            f = open(UPLOAD_FOLDER + result['Image'], "r")
             return {
                 'id' : result['JUserID'],
                 'name' : result['Name'],
                 'email' : result['Email'],
                 'major' : result['major.Name'],
                 'slack' : result['Slack'],
-                'image' : result['Image']
+                'image' : f.read()
             }, 200
         return {'error' : 500}, 500
 

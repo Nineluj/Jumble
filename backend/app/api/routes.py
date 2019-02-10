@@ -51,6 +51,13 @@ interest_model = api.model('Interest',
     }
 )
 
+majoruser_model = api.model('MajorJUser', 
+    {
+        'userID' : fields.Integer,
+        'majorID' : fields.Integer
+    }
+)
+
 major_model = api.model('Major', 
     {
         'id' : fields.Integer,
@@ -528,7 +535,7 @@ class User(Resource):
             }, 200
         return {'error' : 500}, 500
 
-
+# Get data regarding this JUser
 @api.route('/user/<user_id>')
 class User(Resource):
     @api.marshal_with(user_model)
@@ -569,7 +576,7 @@ class Interests(Resource):
 
 # Get all majors for all users
 @api.route('/majors')
-class Majors(Resource):
+class Major(Resource):
     @api.marshal_list_with(major_model)
     def get(self):
         list_of_majors = []
@@ -585,6 +592,24 @@ class Majors(Resource):
                 })
         cnxn.close()
         return list_of_majors, 200
+
+@api.route('/majorUser/')
+class Majors(Resource):
+    @api.marshal_with(majoruser_model)
+    def get(self):
+        list_of_majorusers = []
+        cnxn = getConnection()
+        with cnxn.cursor() as crsr:
+            sql = "SELECT * FROM MajorJUser"
+            crsr.execute(sql)
+            result = crsr.fetchall()
+            for majoruser in result:
+                list_of_majorusers.append({
+                'userID' : majoruser['JUserID'],
+                'majorID' : majoruser['MajorID']
+            })
+        cnxn.close()
+        return list_of_majorusers, 200
 
 # Gets all ideas for all users
 @api.route('/ideas')
@@ -642,8 +667,6 @@ class Events(Resource):
                 })
         cnxn.close()
         return list_of_events, 200
-
-
 
 @api.route('/users')
 class Users(Resource):
